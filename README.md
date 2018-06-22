@@ -35,7 +35,7 @@ After installing MeHR please ask Mews to give you a `ClientToken` and find the
 In order to upload the excel file to the HoKo, MeHR needs your HoKo username and
 password. Please provide these 4 credentials in a [text-file](explain_windows_people_what_a_textfile_is)
 looking like this:
-**TBR:** If the SiDAP client is used, MeHR does not need the HoKo credentials, c.f. #3.
+**TBR:** If the SiDAP client is used, MeHR does not need the HoKo credentials, c.f. [issues/3](https://github.com/dneise/MeHR/issues/3)
 ```
 ClientToken: E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D
 AccessToken: C66EF7B239D24632943D115EDE9CB810-EA00F8FD8294692C940F6B5A8F9453D
