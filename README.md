@@ -3,8 +3,8 @@
 There is also a [german version of this document](README_de.md).
 
 The Mews HoKo Reporter is a little tool to create dedicated reports for the
-[Zurich Hotel Kontrolle (HoKo)](https://www.hotelkontrolle.zh.ch) 
-from [Mews](https://www.mewssystems.com/). 
+[Zurich Hotel Kontrolle (HoKo)](https://www.hotelkontrolle.zh.ch)
+from [Mews](https://www.mewssystems.com/).
 It is supposed to run on-premises on either a Windows or Linux machine of your choice.
 
 ## Purpose
@@ -13,11 +13,11 @@ MeHR will once per night (exact time can be configured by you)
 request the necessary customer profiles needed to compile the report which is
 mandatory in Zurich and requested by the cantonal police. Once the customer data is
 downloaded this tool will create a report (usually in form of an excel file)
-and upload this file for you to <https://www.hotelkontrolle.zh.ch/>. 
+and upload this file for you to <https://www.hotelkontrolle.zh.ch/>.
 
-In order to perform the upload, MeHR might or might not utilize 
+In order to perform the upload, MeHR might or might not utilize
 the [SiDAP client](https://www.hotelkontrolle.zh.ch/HoKoDMZ/pages/info.xhtml)
-provided by the zurich police for this purpose 
+provided by the zurich police for this purpose
 
 Optionally these excel files will not be deleted after uploading them, but will
 remain on your disk for later reference.
@@ -35,6 +35,7 @@ After installing MeHR please ask Mews to give you a `ClientToken` and find the
 In order to upload the excel file to the HoKo, MeHR needs your HoKo username and
 password. Please provide these 4 credentials in a [text-file](explain_windows_people_what_a_textfile_is)
 looking like this:
+**TBR:** If the SiDAP client is used, MeHR does not need the HoKo credentials, c.f. #3.
 ```
 ClientToken: E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D
 AccessToken: C66EF7B239D24632943D115EDE9CB810-EA00F8FD8294692C940F6B5A8F9453D
