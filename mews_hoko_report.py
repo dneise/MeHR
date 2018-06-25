@@ -7,9 +7,9 @@ import os
 from types import SimpleNamespace
 import time
 import iso8601
+from commandr import command, Run
 
 here = os.path.dirname(os.path.realpath(__file__))
-config = SimpleNamespace(**yaml.load(open(os.path.join(here, 'config.yml'))))
 
 iso_to_country = {
  'AD': 'Andorra',
@@ -261,8 +261,28 @@ iso_to_country = {
  'ZZ': 'Nation unbekannt (Personenfahndung)'
 }
 
+config_template = '''
+PlatformAddress: "https://demo.mews.li"
+ClientToken: "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
+AccessToken: "C66EF7B239D24632943D115EDE9CB810-EA00F8FD8294692C940F6B5A8F9453D"
+OutFolder: {outfolder}
+'''
 
-def main(config):
+
+def load_config():
+    config_path = os.path.join(here, 'config.yml')
+    if not os.path.isfile(config_path):
+        print('''\
+There is no config.yml file in the MeHR folder.
+I am going to make one for you now.''')
+        open(config_path, 'w').write(config_template.format(outfolder=here))
+    config = SimpleNamespace(**yaml.load(open(config_path)))
+    return config
+
+
+@command('repeat')
+def repeat():
+    config = load_config()
     period = timedelta(hours=24).total_seconds()
     next_execution = 0
     while True:
@@ -270,8 +290,25 @@ def main(config):
         if current_time >= next_execution:
             mews_report = get_started_reservations_yesterday(config)
             rows = mews_report_to_report_rows(mews_report)
-            write_excel_output_file(rows)
+            write_excel_output_file(
+                rows,
+                outfolder=config.OutFolder
+            )
             next_execution = current_time + period
+
+
+@command('main')
+def date(when='15.12.1980'):
+    config = load_config()
+    mews_report = get_started_reservations_yesterday(
+        config,
+        start_utc=to_date('when')
+    )
+    rows = mews_report_to_report_rows(mews_report)
+    write_excel_output_file(
+        rows,
+        outfolder=config.OutFolder
+    )
 
 
 def get_started_reservations_yesterday(
@@ -378,7 +415,7 @@ def mews_report_to_report_rows(mews_report):
     return rows
 
 
-def write_excel_output_file(rows):
+def write_excel_output_file(rows, outfolder):
     wb = openpyxl.Workbook()
     sh = wb.create_sheet(title='HoKo')
     for col_index, col_name in enumerate(HOKO_EXCEL_REPORT_COLUMN_NAMES):
@@ -394,7 +431,13 @@ def write_excel_output_file(rows):
                 value=row[col_name]
             )
 
-    wb.save(os.path.join(here, 'test.xls'))
+    if not os.path.isdir(outfolder):
+        print('''\
+The outfolder you specified in your config file does not exist.
+OutFolder: {outfolder}
+I am going to create that folder now.''')
+        os.makedirs(outfolder)
+    wb.save(os.path.join(outfolder, 'test.xls'))
 
 
 HOKO_EXCEL_REPORT_COLUMN_NAMES = [
@@ -448,4 +491,4 @@ def to_date(s):
     return iso8601.parse_date(s)
 
 if __name__ == '__main__':
-    mews_report = get_started_reservations_yesterday(config)
+    Run(main='main')
