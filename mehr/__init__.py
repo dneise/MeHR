@@ -53,9 +53,8 @@ def get_started_reservations_yesterday(
     end_utc=None,
     states=['Started', ],
     extent={
-        "Reservations": False,
-        "ReservationGroups": False,
         "Customers": True,
+        "Reservations": True,
         "Spaces": True,
     },
 ):
@@ -98,7 +97,7 @@ def reservations_getAll(
     if end_utc is None:
         end_utc = start_utc + timedelta(days=1)
 
-    return requests.post(
+    response = requests.post(
         '{PlatformAddress}/api/connector/v1/{Resource}/{Operation}'.format(
             PlatformAddress=config.PlatformAddress,
             Resource='reservations',
@@ -111,9 +110,11 @@ def reservations_getAll(
             "CultureCode": None,
             "TimeFilter": time_filter,
             "StartUtc": start_utc.isoformat(),
-            "EndUtc": end_utc.isoformat()
+            "EndUtc": end_utc.isoformat(),
+            "Extent": extent,
         }
-    ).json()
+    )
+    return response.json()
 
 
 def mews_report_to_report_rows(mews_report):
