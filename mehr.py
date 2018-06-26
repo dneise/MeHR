@@ -1,6 +1,6 @@
 import os.path
 import time
-from datetime import timedelta, datetime
+from datetime import timedelta
 from tqdm import tqdm
 
 from mehr_config import load_config
