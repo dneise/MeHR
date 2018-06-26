@@ -2,282 +2,14 @@ from datetime import datetime, timedelta
 from datetime import time as dt_time
 import requests
 import openpyxl
-import yaml
 import os
-from types import SimpleNamespace
 import time
 import iso8601
+from dateutil.parser import parse
 from commandr import command, Run
 
-here = os.path.dirname(os.path.realpath(__file__))
-
-iso_to_country = {
- 'AD': 'Andorra',
- 'AE': 'Vereinigte arabische Emirate',
- 'AF': 'Afghanistan',
- 'AG': 'Antigua und Barbuda',
- 'AI': 'Anguilla',
- 'AL': 'Albanien',
- 'AM': 'Armenien',
- 'AN': 'Niederländische Antillen',
- 'AO': 'Angola',
- 'AQ': 'Antarktis',
- 'AR': 'Argentinien',
- 'AS': 'Amerikanisch Samoa',
- 'AT': 'Oesterreich',
- 'AU': 'Australien',
- 'AW': 'Aruba',
- 'AZ': 'Aserbaidschan',
- 'BA': 'Bosnien und Herzegowina',
- 'BB': 'Barbados',
- 'BD': 'Bangladesh',
- 'BE': 'Belgien',
- 'BF': 'Burkina Faso',
- 'BG': 'Bulgarien',
- 'BH': 'Bahrain',
- 'BI': 'Burundi',
- 'BJ': 'Benin',
- 'BM': 'Bermuda (GB)',
- 'BN': 'Brunei',
- 'BO': 'Bolivien',
- 'BR': 'Brasilien',
- 'BS': 'Bahamas',
- 'BT': 'Bhutan',
- 'BV': 'Bouvet-Insel',
- 'BW': 'Botswana',
- 'BY': 'Belarus (Weissrussland)',
- 'BZ': 'Belize',
- 'CA': 'Kanada',
- 'CC': 'Cocos-Inseln',
- 'CF': 'Zentralafrikanische Republik',
- 'CG': 'Kongo',
- 'CH': 'Schweiz',
- 'CI': 'Elfenbeinküste',
- 'CK': 'Cook-Inseln',
- 'CL': 'Chile',
- 'CM': 'Kamerun',
- 'CN': 'China (Volksrepublik)',
- 'CO': 'Kolumbien',
- 'CR': 'Costa Rica',
- 'CU': 'Kuba',
- 'CV': 'Kapverden',
- 'CX': 'Christmas-Insel (AUS)',
- 'CY': 'Zypern',
- 'CZ': 'Tschechische Republik',
- 'DE': 'Deutschland',
- 'DJ': 'Djibouti',
- 'DK': 'Dänemark',
- 'DM': 'Dominica',
- 'DO': 'Dominikanische Republik',
- 'DZ': 'Algerien',
- 'EC': 'Ecuador',
- 'EE': 'Estland',
- 'EG': 'Aegypten',
- 'EH': 'Westsahara',
- 'ER': 'Eritrea',
- 'ES': 'Spanien',
- 'ET': 'Aethiopien',
- 'FI': 'Finnland',
- 'FJ': 'Fidschi (Inseln)',
- 'FK': 'Falkland-Inseln',
- 'FM': 'Mikronesien',
- 'FR': 'Frankreich',
- 'GA': 'Gabun',
- 'GB': 'Grossbritannien, Vereinigtes Königreich',
- 'GD': 'Grenada',
- 'GE': 'Georgien',
- 'GF': 'Französisch-Guyana',
- 'GH': 'Ghana',
- 'GI': 'Gibraltar',
- 'GL': 'Grönland',
- 'GM': 'Gambia',
- 'GN': 'Guinea',
- 'GP': 'Guadeloupe',
- 'GQ': 'Aequatorial-Guinea',
- 'GR': 'Griechenland',
- 'GT': 'Guatemala',
- 'GU': 'Guam',
- 'GW': 'Guinea-Bissau',
- 'GY': 'Guyana (Republik)',
- 'HK': 'Hongkong',
- 'HM': 'Heard-, MacDonald-Inseln',
- 'HN': 'Honduras',
- 'HR': 'Kroatien',
- 'HT': 'Haiti',
- 'HU': 'Ungarn',
- 'ID': 'Indonesien',
- 'IE': 'Irland',
- 'IL': 'Israel',
- 'IN': 'Indien',
- 'IO': 'Britische Territorien im indischen Ozean',
- 'IQ': 'Irak',
- 'IR': 'Iran',
- 'IS': 'Island',
- 'ISO': 'Land',
- 'IT': 'Italien',
- 'JM': 'Jamaika',
- 'JO': 'Jordanien',
- 'JP': 'Japan',
- 'KE': 'Kenia',
- 'KG': 'Kirgisistan',
- 'KH': 'Kambodscha',
- 'KI': 'Kiribati',
- 'KM': 'Komoren',
- 'KN': 'St. Kitts und Nevis',
- 'KO': 'Kosovo',
- 'KP': 'Korea (Nord)',
- 'KR': 'Korea (Süd)',
- 'KW': 'Kuwait',
- 'KY': 'Kaiman-Inseln GB',
- 'KZ': 'Kasachstan',
- 'LA': 'Laos',
- 'LB': 'Libanon',
- 'LC': 'St. Lucia',
- 'LI': 'Liechtenstein',
- 'LK': 'Sri Lanka',
- 'LR': 'Liberia',
- 'LS': 'Lesotho',
- 'LT': 'Litauen',
- 'LU': 'Luxemburg',
- 'LV': 'Lettland',
- 'LY': 'Libyen',
- 'MA': 'Marokko',
- 'MC': 'Monaco',
- 'MD': 'Moldau',
- 'ME': 'Montenegro',
- 'MG': 'Madagaskar',
- 'MH': 'Marshall-Inseln',
- 'MK': 'Mazedonien',
- 'ML': 'Mali',
- 'MM': 'Myanmar',
- 'MN': 'Mongolei',
- 'MO': 'Macao',
- 'MQ': 'Martinique',
- 'MR': 'Mauretanien',
- 'MS': 'Montserrat',
- 'MT': 'Malta',
- 'MU': 'Mauritius',
- 'MV': 'Malediven',
- 'MW': 'Malawi',
- 'MX': 'Mexiko',
- 'MY': 'Malaysia',
- 'MZ': 'Mosambik',
- 'NA': 'Namibia',
- 'NC': 'Neukaledonien',
- 'NE': 'Niger',
- 'NF': 'Norfolk-Insel',
- 'NG': 'Nigeria',
- 'NI': 'Nicaragua',
- 'NL': 'Niederlande',
- 'NO': 'Norwegen',
- 'NP': 'Nepal',
- 'NR': 'Nauru',
- 'NU': 'Niue',
- 'NZ': 'Neuseeland',
- 'OM': 'Oman',
- 'PA': 'Panama',
- 'PE': 'Peru',
- 'PF': 'Französisch-Polynesien',
- 'PG': 'Papua-Neuguinea',
- 'PH': 'Philippinen',
- 'PK': 'Pakistan',
- 'PL': 'Polen',
- 'PM': 'St-Pierre und Miquelon',
- 'PN': 'Pitcairn-Inseln',
- 'PR': 'Puerto Rico',
- 'PS': 'Palästina',
- 'PT': 'Portugal',
- 'PW': 'Palau',
- 'PY': 'Paraguay',
- 'QA': 'Katar',
- 'RE': 'Reunion',
- 'RO': 'Rumänien',
- 'RS': 'Serbien',
- 'RU': 'Russland',
- 'RW': 'Rwanda',
- 'SA': 'Saudi Arabien',
- 'SB': 'Salomon Inseln',
- 'SC': 'Seychellen',
- 'SD': 'Sudan',
- 'SE': 'Schweden',
- 'SG': 'Singapur',
- 'SH': 'St. Helena',
- 'SI': 'Slowenien',
- 'SJ': 'Svalbard und Jan Mayen',
- 'SK': 'Slowakische Republik',
- 'SL': 'Sierra Leone',
- 'SM': 'San Marino',
- 'SN': 'Senegal',
- 'SO': 'Somalia',
- 'SR': 'Suriname',
- 'ST': 'São Tome und Principe',
- 'SV': 'El Salvador',
- 'SY': 'Syrien',
- 'SZ': 'Swasiland',
- 'TC': 'Turks-, Caicos-Inseln',
- 'TD': 'Tschad',
- 'TF': 'Südliches Eismeer (F)',
- 'TG': 'Togo',
- 'TH': 'Thailand',
- 'TJ': 'Tadschikistan',
- 'TK': 'Tokelau',
- 'TM': 'Turkmenistan',
- 'TN': 'Tunesien',
- 'TO': 'Tonga',
- 'TP': 'Timor-Leste',
- 'TR': 'Türkei',
- 'TT': 'Trinidad und Tobago',
- 'TV': 'Tuvalu',
- 'TW': 'Taiwan (China)',
- 'TZ': 'Tansania',
- 'UA': 'Ukraine',
- 'UB': 'Officional of special organisation',
- 'UG': 'Uganda',
- 'UK': 'Unmik (Kosovo)',
- 'UM': 'Treuhandinseln (USA)',
- 'UN': 'Vereinte Nationen',
- 'US': 'Vereinigte Staaten von Amerika (USA)',
- 'UY': 'Uruguay',
- 'UZ': 'Usbekistan',
- 'VA': 'Vatikanstadt',
- 'VC': 'St. Vincent und die Grenadinen',
- 'VE': 'Venezuela',
- 'VG': 'Jungfern-Inseln (UK)',
- 'VI': 'Jungfern-Inseln (USA)',
- 'VN': 'Vietnam',
- 'VU': 'Vanuatu (Republik)',
- 'WF': 'Wallis und Futuna',
- 'WS': 'Samoa (West)',
- 'X': 'unbekannt/inconnu/sconosciuto',
- 'XP': 'INTERPOL',
- 'XX': 'Staatenlos',
- 'YE': 'Jemen',
- 'YT': 'Mayotte (Insel)',
- 'YU': 'Bundesrepublik Jugoslawien',
- 'ZA': 'Südafrika',
- 'ZM': 'Sambia',
- 'ZR': 'Demokratische Republik Kongo',
- 'ZW': 'Zimbabwe',
- 'ZZ': 'Nation unbekannt (Personenfahndung)'
-}
-
-config_template = '''
-PlatformAddress: "https://demo.mews.li"
-ClientToken: "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D"
-AccessToken: "C66EF7B239D24632943D115EDE9CB810-EA00F8FD8294692C940F6B5A8F9453D"
-OutFolder: {outfolder}
-'''
-
-
-def load_config():
-    config_path = os.path.join(here, 'config.yml')
-    if not os.path.isfile(config_path):
-        print('''\
-There is no config.yml file in the MeHR folder.
-I am going to make one for you now.''')
-        open(config_path, 'w').write(config_template.format(outfolder=here))
-    config = SimpleNamespace(**yaml.load(open(config_path)))
-    return config
+from .iso_to_country import iso_to_country
+from .config import load_config
 
 
 @command('repeat')
@@ -298,11 +30,11 @@ def repeat():
 
 
 @command('main')
-def date(when='15.12.1980'):
+def date(when='22.06.2018'):
     config = load_config()
     mews_report = get_started_reservations_yesterday(
         config,
-        start_utc=to_date('when')
+        start_utc=None if when is None else parse(when).date()
     )
     rows = mews_report_to_report_rows(mews_report)
     write_excel_output_file(
@@ -387,30 +119,44 @@ def mews_report_to_report_rows(mews_report):
         customer['Id']: customer
         for customer in mews_report['Customers']
     }
-    spaces = {
-        space['Id']: space
-        for space in mews_report['Spaces']
-    }
+    if mews_report['Spaces'] is not None:
+        spaces = {
+            space['Id']: space
+            for space in mews_report['Spaces']
+        }
+    else:
+        spaces = {}
 
     for reservation in mews_report['Reservations']:
+        row = {}
         customer = customers[reservation['CustomerId']]
-        space = spaces[reservation['AssignedSpaceId']]
-        birth_date = to_date(customer['BirthDateUtc'])
+        space = spaces.get(reservation['AssignedSpaceId'], None)
 
-        row = {
+        if customer['BirthDateUtc'] is not None:
+            birth_date = to_date(customer['BirthDateUtc'])
+            row.update({
+                'Geboren Tag': str(birth_date.day),
+                'Monat': str(birth_date.month),
+                'Jahr': str(birth_date.year),
+            })
+        else:
+            row.update({
+                'Geboren Tag': '',
+                'Monat': '',
+                'Jahr': '',
+            })
+
+        row.update({
             'Meldeschein Nr.': str(len(rows) + 1),
             'Familienname': customer['LastName'],
             'Vornamen': customer['FirstName'],
-            'Geboren Tag': str(birth_date.day),
-            'Monat': str(birth_date.month),
-            'Jahr': str(birth_date.year),
-            'Staatsangehörigkeit ISO': customer['NationalityCode'],
-            'Staatsangehörigkeit': iso_to_country[(customer['NationalityCode'])],
+            'Staatsangehörigkeit ISO': str(customer['NationalityCode']),
+            'Staatsangehörigkeit': iso_to_country.get((customer['NationalityCode']), ''),
             'Ankunft': to_date(reservation['StartUtc']).strftime('%d.%m.%Y'),
             'Abreise': to_date(reservation['EndUtc']).strftime('%d.%m.%Y'),
-            'Zimmernummer': space['Number'],
+            'Zimmernummer': 'unknown' if space is None else space['Number'],
             'Ausweisnummer': ausweisnummer_from_customer(customer)
-        }
+        })
         rows.append(row)
     return rows
 
