@@ -417,7 +417,7 @@ def mews_report_to_report_rows(mews_report):
         space = spaces.get(reservation['AssignedSpaceId'], None)
 
         if customer['BirthDateUtc'] is not None:
-            birth_date = to_date(customer['BirthDateUtc'])
+            birth_date = iso8601.parse_date(customer['BirthDateUtc'])
             row.update({
                 'Geboren Tag': str(birth_date.day),
                 'Monat': str(birth_date.month),
@@ -436,8 +436,12 @@ def mews_report_to_report_rows(mews_report):
             'Vornamen': customer['FirstName'],
             'Staatsangehörigkeit ISO': str(customer['NationalityCode']),
             'Staatsangehörigkeit': iso_to_country.get((customer['NationalityCode']), ''),
-            'Ankunft': to_date(reservation['StartUtc']).strftime('%d.%m.%Y'),
-            'Abreise': to_date(reservation['EndUtc']).strftime('%d.%m.%Y'),
+            'Ankunft': iso8601.parse_date(
+                reservation['StartUtc']
+            ).strftime('%d.%m.%Y'),
+            'Abreise': iso8601.parse_date(
+                reservation['EndUtc']
+            ).strftime('%d.%m.%Y'),
             'Zimmernummer': 'unknown' if space is None else space['Number'],
             'Ausweisnummer': ausweisnummer_from_customer(customer)
         })
@@ -521,10 +525,6 @@ def ausweisnummer_from_customer(customer):
             if number:
                 return number
     return ''
-
-
-def to_date(s):
-    return iso8601.parse_date(s)
 
 
 if __name__ == '__main__':
