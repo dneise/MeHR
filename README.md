@@ -1,8 +1,5 @@
 # Mews HoKo Reporter (MeHR)
 
-# This is not-even-alpha software ... work in progress.
-
-There is also a [german version of this document](README_de.md).
 
 The Mews HoKo Reporter is a little tool to create dedicated reports for the
 [Zurich Hotel Kontrolle (HoKo)](https://www.hotelkontrolle.zh.ch)
@@ -11,84 +8,44 @@ It is supposed to run on-premises on either a Windows or Linux machine of your c
 
 ## Purpose
 
-MeHR will once per night (exact time can be configured by you)
+MeHR will once per days
 request the necessary customer profiles needed to compile the report which is
 mandatory in Zurich and requested by the cantonal police. Once the customer data is
-downloaded this tool will create a report (usually in form of an excel file)
-and upload this file for you to <https://www.hotelkontrolle.zh.ch/>.
+downloaded this tool will create a report (excel file) and place the file in a locations (specified by the user) 
+so the SiDAP Client (c.f. below) can find it and upload it.
 
-In order to perform the upload, MeHR might or might not utilize
+In order to perform the upload uses the
 the [SiDAP client](https://www.hotelkontrolle.zh.ch/HoKoDMZ/pages/info.xhtml)
-provided by the zurich police for this purpose
+provided by the zurich police for this purpose.
 
-Optionally these excel files will not be deleted after uploading them, but will
-remain on your disk for later reference.
-
-## Configuration
+## Configuration and Usage
 
 In order to be able to download your customer profiles from Mews this tool
 needs two cryptographic keys:
- * one key, you can generate yourself, which is called `AccessToken` and
- * one you'll need to request from Mews called `ClientToken`.
+ * the `AccessToken` (one per property) and
+ * the `ClientToken`.
 
-After installing MeHR please ask Mews to give you a `ClientToken` and find the
-`AccessToken` in the Mews Commander (**TODO: write/find detailed description how to find the AccessToken**)
+After installing MeHR please ask Mews to give you a `ClientToken` and one `AccessToken` per property you would like to creat ereports for.
 
-In order to upload the excel file to the HoKo, MeHR needs your HoKo username and
-password. Please provide these 4 credentials in a [text-file](explain_windows_people_what_a_textfile_is)
-looking like this:
-**TBR:** If the SiDAP client is used, MeHR does not need the HoKo credentials, c.f. [issues/3](https://github.com/dneise/MeHR/issues/3)
-```
-ClientToken: E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D
-AccessToken: C66EF7B239D24632943D115EDE9CB810-EA00F8FD8294692C940F6B5A8F9453D
-HoKoUsername: my_secret_hoko_username
-HoKoPassword: my_very_secret_hoko_password
-```
+In order to install MeHR you only need to download `mehr.exe` from here:
 
-You can use a single MeHR installation to create and upload HoKo reports
-for multiple hotels of your chain, so in order to keep everything nice and tidy, please
-specify the aforementioned credentials for each hotel, it should look like this:
+https://github.com/dneise/MeHR/releases
 
-```
-MyAwesomeHotel:
-  ClientToken: E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D
-  AccessToken: C66EF7B239D24632943D115EDE9CB810-EA00F8FD8294692C940F6B5A8F9453D
-  HoKoUsername: my_secret_hoko_username
-  HoKoPassword: my_very_secret_hoko_password
-MyVeryBestHotel:
-  ClientToken: E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D
-  AccessToken: same_client_token_but_different_access_token
-  HoKoUsername: another_different_hoko_username
-  HoKoPassword: another_very_secret_hoko_password
-```
+You can put the `mehr.exe` file in any location you like. In order to configure it, please double click on the file. When started for the first time, it will only create `config.json` file and end itself. You can now open that file and enter the secret `ClientToken` and `AccessToken`s as well as adjust the Name of the hotel and the location you would like the output to be stored as well as the file name.
 
-As you can see the `ClientToken` is always the same for each hotel, but the
-`AccessToken` is different for the different hotels.
+Once you have configured mehr correctly, just save the `config.json` and start mehr.exe again. It will immediately start creating the excel files and put them into the requested location for every hotel you have configured. Then it will wiat 24 hours and repeat the same step again.
 
+In order to keep it running you will have to keep the window open forever and never log out. If you do not want this, you can install Mehr as a service as outlined below.
 
+# Installation as a service
 
-# Installation
+In order to install `mehr.exe` on your Windows machine as a service, you will have to use a tool called `NSSM`, which can be [downloaded here](https://nssm.cc/download). I used the "nssm 2.24 (2014-08-31)" for testing.
 
-[
-TBR: deliver a windows installer for convenience, so people do not need to install
-first Python3 and then MeHR
-]
+This tool can be used to install any program as a service to run in the background of your computer, NSSM claims to even restart the program should it ever crash and restart it. 
 
-The software is written in Python 3, if you do not have Python 3 installed on
-your machine (which is likely on both Windows and Linux) I recommend to install
-the Python distribution called [Anaconda](https://www.anaconda.com/download).
-It is free of charge and makes installation of additional libraries and packages
-much easier than the vanilla Python you get on [python.org](https://www.python.org/downloads/).
+Dedicated Help on how to install any program as a service can be found on the NSSM website.
 
-
-Once Python 3 is installed you can install MeHR by typing:
-
-    pip install git+https://github.com/dneise/mehr
-
-
-# Usage
-
-[work in progress]
+I did not need administrator rights to do this on my machine, but I also did not restrict my user very much.
 
 
 # [License](LICENSE)
