@@ -1,14 +1,15 @@
 import os.path
 import time
-from types import SimpleNamespace
 from datetime import timedelta, datetime
-from mehr_test import (
-    load_config,
+from tqdm import trange
+
+from mehr_config import load_config
+from mehr_lib import (
     reservations_getAll,
     mews_report_to_report_rows,
     write_excel_output_file
 )
-from tqdm import trange
+
 
 here = os.path.dirname(os.path.realpath(__file__))
 
@@ -41,7 +42,6 @@ def repeat():
     while True:
         wait_for_next_execution()
         for config in configs:
-            config = SimpleNamespace(**config)
             print('Working on Hotel: {}'.format(
                 config.Name))
             mews_report = reservations_getAll(config)
