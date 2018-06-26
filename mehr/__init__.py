@@ -163,7 +163,8 @@ def mews_report_to_report_rows(mews_report):
 
 def write_excel_output_file(rows, outfolder):
     wb = openpyxl.Workbook()
-    sh = wb.create_sheet(title='HoKo')
+    sh = wb.active
+    sh.title = "HoKo"
     for col_index, col_name in enumerate(HOKO_EXCEL_REPORT_COLUMN_NAMES):
         sh.cell(row=1, column=col_index+1, value=col_name)
 
