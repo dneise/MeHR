@@ -1,4 +1,3 @@
-from datetime import datetime
 import os.path
 from dateutil.parser import parse
 
@@ -14,15 +13,17 @@ here = os.path.dirname(os.path.realpath(__file__))
 
 def date(when='22.06.2018'):
     configs = load_config(here)
+    when = parse(when)
     for config in configs:
-        mews_report = reservations_getAll(
+        mews_report, start_time = reservations_getAll(
             config,
-            start_utc=None if when is None else parse(when).date()
+            start_utc=when
         )
         rows = mews_report_to_report_rows(mews_report)
-
-        now = datetime.now()
-        outpath = os.path.join(config.OutFolder, now.strftime(config.FileName))
+        outpath = os.path.join(
+            config.OutFolder,
+            start_time.strftime(config.FileName)
+        )
         write_excel_output_file(
             rows,
             outpath=outpath

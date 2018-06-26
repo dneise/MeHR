@@ -46,12 +46,11 @@ def repeat():
         for config in configs:
             print('Working on Hotel: {}'.format(
                 config.Name))
-            mews_report = reservations_getAll(config)
+            mews_report, start_time = reservations_getAll(config)
             rows = mews_report_to_report_rows(mews_report)
-            now = datetime.now()
             outpath = os.path.join(
                 config.OutFolder,
-                now.strftime(config.FileName)
+                start_time.strftime(config.FileName)
             )
             print('Writing Excel File: {}'.format(
                 outpath))

@@ -55,7 +55,7 @@ def reservations_getAll(
             "Extent": extent,
         }
     )
-    return response.json()
+    return response.json(), start_utc
 
 
 def mews_report_to_report_rows(mews_report):
