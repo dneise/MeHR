@@ -1,5 +1,6 @@
 import os.path
 import time
+from types import SimpleNamespace
 from datetime import timedelta, datetime
 from mehr import (
     load_config,
@@ -17,6 +18,7 @@ def repeat():
         current_time = time.time()
         if current_time >= next_execution:
             for config in configs:
+                config = SimpleNamespace(**config)
                 mews_report = get_started_reservations_yesterday(config)
                 rows = mews_report_to_report_rows(mews_report)
                 now = datetime.now()
@@ -29,6 +31,7 @@ def repeat():
                     outpath=outpath
                 )
             next_execution = current_time + period
+        time.sleep(60)
 
 
 if __name__ == '__main__':
