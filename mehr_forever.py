@@ -22,7 +22,7 @@ def wait_for_next_execution(period=timedelta(hours=24).total_seconds()):
         next_execution = current_time + period
         return
     else:
-        minutes_until = (next_execution - current_time) // 60
+        minutes_until = int((next_execution - current_time) / 60)
         print(
             '{} minutes until next report to be made... waiting'.format(
                 minutes_until
