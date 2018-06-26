@@ -27,6 +27,7 @@ def date(when='22.06.2018'):
             rows,
             outpath=outpath
         )
+    return mews_report
 
 if __name__ == '__main__':
-    date()
+    mews_report = date()
