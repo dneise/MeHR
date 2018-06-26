@@ -1,3 +1,4 @@
+import sys
 from types import SimpleNamespace
 import os.path
 import json
@@ -33,6 +34,7 @@ def load_config(path_to_config):
             open(config_path, 'w'),
             indent=4,
         )
+        sys.exit(0)
     config = json.load(open(config_path))
     configs = flatten_config(config)
     return configs
@@ -43,6 +45,6 @@ def flatten_config(cfg):
     for hotel in cfg['Hotels']:
         hotel['PlatformAddress'] = cfg['PlatformAddress']
         hotel['ClientToken'] = cfg['ClientToken']
-    configs.append(SimpleNamespace(**hotel))
+        configs.append(SimpleNamespace(**hotel))
 
     return configs

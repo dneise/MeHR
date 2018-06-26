@@ -42,22 +42,25 @@ def repeat():
     configs = load_config(here)
 
     while True:
-        wait_for_next_execution()
-        for config in configs:
-            print('Working on Hotel: {}'.format(
-                config.Name))
-            mews_report, start_time = reservations_getAll(config)
-            rows = mews_report_to_report_rows(mews_report)
-            outpath = os.path.join(
-                config.OutFolder,
-                start_time.strftime(config.FileName)
-            )
-            print('Writing Excel File: {}'.format(
-                outpath))
-            write_excel_output_file(
-                rows,
-                outpath=outpath
-            )
+        try:
+            wait_for_next_execution()
+            for config in configs:
+                print('Working on Hotel: {}'.format(
+                    config.Name))
+                mews_report, start_time = reservations_getAll(config)
+                rows = mews_report_to_report_rows(mews_report)
+                outpath = os.path.join(
+                    config.OutFolder,
+                    start_time.strftime(config.FileName)
+                )
+                print('Writing Excel File: {}'.format(
+                    outpath))
+                write_excel_output_file(
+                    rows,
+                    outpath=outpath
+                )
+        except (KeyboardInterrupt, SystemExit):
+            return
 
 
 if __name__ == '__main__':
