@@ -1,3 +1,4 @@
+from types import SimpleNamespace
 import os.path
 import json
 
@@ -42,5 +43,6 @@ def flatten_config(cfg):
     for hotel in cfg['Hotels']:
         hotel['PlatformAddress'] = cfg['PlatformAddress']
         hotel['ClientToken'] = cfg['ClientToken']
-    configs.append(hotel)
+    configs.append(SimpleNamespace(**hotel))
+
     return configs
