@@ -42,6 +42,8 @@ def repeat():
         wait_for_next_execution()
         for config in configs:
             config = SimpleNamespace(**config)
+            print('Working on Hotel: {}'.format(
+                config.Name))
             mews_report = get_started_reservations_yesterday(config)
             rows = mews_report_to_report_rows(mews_report)
             now = datetime.now()
@@ -49,6 +51,8 @@ def repeat():
                 config.OutFolder,
                 now.strftime(config.FileName)
             )
+            print('Writing Excel File: {}'.format(
+                outpath))
             write_excel_output_file(
                 rows,
                 outpath=outpath
