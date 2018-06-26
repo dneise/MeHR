@@ -237,5 +237,10 @@ def ausweisnummer_from_customer(customer):
 def to_date(s):
     return iso8601.parse_date(s)
 
-if __name__ == '__main__':
+
+def entry():
     Run(main='main')
+
+
+if __name__ == '__main__':
+    entry()
