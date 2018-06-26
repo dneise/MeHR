@@ -496,10 +496,6 @@ HOKO_EXCEL_REPORT_COLUMN_NAMES = [
 ]
 
 
-def zimmernummer_from_reservation(reservation):
-    raise NotImplementedError
-
-
 def ausweisnummer_from_customer(customer):
     ''' customers can identify with different documents
     we have a certain order of how much we like different documents
