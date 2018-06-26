@@ -5,10 +5,8 @@ import openpyxl
 import os
 import os.path
 from types import SimpleNamespace
-import time
 import iso8601
 from dateutil.parser import parse
-from commandr import command, Run
 
 import json
 
@@ -309,24 +307,6 @@ def flatten_config(cfg):
     return configs
 
 
-@command('repeat')
-def repeat():
-    config = load_config()
-    period = timedelta(hours=24).total_seconds()
-    next_execution = 0
-    while True:
-        current_time = time.time()
-        if current_time >= next_execution:
-            mews_report = get_started_reservations_yesterday(config)
-            rows = mews_report_to_report_rows(mews_report)
-            write_excel_output_file(
-                rows,
-                outfolder=config.OutFolder
-            )
-            next_execution = current_time + period
-
-
-@command('main')
 def date(when='22.06.2018'):
     configs = load_config()
     for config in configs:
@@ -550,9 +530,5 @@ def to_date(s):
     return iso8601.parse_date(s)
 
 
-def entry():
-    Run(main='main')
-
-
 if __name__ == '__main__':
-    entry()
+    date()
