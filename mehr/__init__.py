@@ -40,9 +40,12 @@ def date(when='22.06.2018'):
             start_utc=None if when is None else parse(when).date()
         )
         rows = mews_report_to_report_rows(mews_report)
+
+        now = datetime.now()
+        outpath = os.path.join(config.OutFolder, now.strftime(config.FileName))
         write_excel_output_file(
             rows,
-            outfolder=config.OutFolder
+            outpath=outpath
         )
 
 
@@ -165,10 +168,13 @@ def mews_report_to_report_rows(mews_report):
     return rows
 
 
-def write_excel_output_file(rows, outfolder):
+def write_excel_output_file(rows, outpath):
     wb = openpyxl.Workbook()
     sh = wb.active
     sh.title = "HoKo"
+    from openpyxl.cell.cell import get_column_letter
+    for i in range(len(HOKO_EXCEL_REPORT_COLUMN_NAMES)):
+        sh.column_dimensions[get_column_letter(i+1)].width = 15
 
     my_fill = openpyxl.styles.fills.PatternFill(
         patternType='solid',
@@ -191,13 +197,10 @@ def write_excel_output_file(rows, outfolder):
                 value=row[col_name]
             )
 
+    outfolder = os.path.dirname(outpath)
     if not os.path.isdir(outfolder):
-        print('''\
-The outfolder you specified in your config file does not exist.
-OutFolder: {outfolder}
-I am going to create that folder now.''')
         os.makedirs(outfolder)
-    wb.save(os.path.join(outfolder, 'test.xls'))
+    wb.save(outpath)
 
 
 HOKO_EXCEL_REPORT_COLUMN_NAMES = [
