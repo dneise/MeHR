@@ -12,4 +12,10 @@ setup(
     ],
     install_requires=[],
     license="MIT license",
+
+    entry_points={
+        'console_scripts': [
+            'MeHR=mehr.__init__:entry',
+        ],
+    }
 )
