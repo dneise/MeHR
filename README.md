@@ -1,5 +1,7 @@
 # Mews HoKo Reporter (MeHR)
 
+# This is not-even-alpha software ... work in progress.
+
 There is also a [german version of this document](README_de.md).
 
 The Mews HoKo Reporter is a little tool to create dedicated reports for the
