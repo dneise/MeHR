@@ -29,7 +29,7 @@ config_template = {
 config_not_found_message = '''\
 There is no "config.json" file in {here}
 I am going to make one for you now.
-Please, adjust the file to your personal needs and start me again.
+Please, adjust the file to your personal needs.
 '''
 
 
