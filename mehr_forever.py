@@ -9,9 +9,11 @@ from mehr import (
     write_excel_output_file
 )
 
+here = os.path.dirname(os.path.realpath(__file__))
+
 
 def repeat():
-    configs = load_config()
+    configs = load_config(here)
     period = timedelta(hours=24).total_seconds()
     next_execution = 0
     while True:

@@ -284,10 +284,10 @@ iso_to_country = {
 }
 
 
-def load_config():
-    config_path = os.path.join(here, 'config.json')
+def load_config(path_to_config=here):
+    config_path = os.path.join(path_to_config, 'config.json')
     if not os.path.isfile(config_path):
-        print(config_not_found_message.format(here=here))
+        print(config_not_found_message.format(here=path_to_config))
         json.dump(
             config_template,
             open(config_path, 'w'),
