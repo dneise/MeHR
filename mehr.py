@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from datetime import timedelta, datetime
 from mehr_test import (
     load_config,
-    get_started_reservations_yesterday,
+    reservations_getAll,
     mews_report_to_report_rows,
     write_excel_output_file
 )
@@ -44,7 +44,7 @@ def repeat():
             config = SimpleNamespace(**config)
             print('Working on Hotel: {}'.format(
                 config.Name))
-            mews_report = get_started_reservations_yesterday(config)
+            mews_report = reservations_getAll(config)
             rows = mews_report_to_report_rows(mews_report)
             now = datetime.now()
             outpath = os.path.join(

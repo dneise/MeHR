@@ -312,7 +312,7 @@ def date(when='22.06.2018'):
     configs = load_config()
     for config in configs:
         config = SimpleNamespace(**config)
-        mews_report = get_started_reservations_yesterday(
+        mews_report = reservations_getAll(
             config,
             start_utc=None if when is None else parse(when).date()
         )
@@ -326,7 +326,11 @@ def date(when='22.06.2018'):
         )
 
 
-def get_started_reservations_yesterday(
+def last_midnight():
+    return datetime.combine(datetime.utcnow().date(), dt_time())
+
+
+def reservations_getAll(
     config,
     time_filter='Start',
     start_utc=None,
@@ -338,33 +342,6 @@ def get_started_reservations_yesterday(
         "Spaces": True,
     },
 ):
-
-    if start_utc is None:
-        start_utc = today_midnight() - timedelta(days=1)
-    if end_utc is None:
-        end_utc = start_utc + timedelta(days=1)
-    return reservations_getAll(
-        config,
-        time_filter=time_filter,
-        start_utc=start_utc,
-        end_utc=end_utc,
-        states=states,
-        extent=extent
-    )
-
-
-def today_midnight():
-    return datetime.combine(datetime.utcnow().date(), dt_time())
-
-
-def reservations_getAll(
-    config,
-    time_filter=None,
-    start_utc=datetime.utcnow(),
-    end_utc=None,
-    states=None,
-    extent=None,
-):
     '''
     time_filter - string, default Colliding
     start_utc - string, default: Now
@@ -373,7 +350,8 @@ def reservations_getAll(
     extent - string, default Reservations, Groups and Customers
     currency - string
     '''
-
+    if start_utc is None:
+        start_utc = last_midnight() - timedelta(days=1)
     if end_utc is None:
         end_utc = start_utc + timedelta(days=1)
 
