@@ -19,7 +19,7 @@ config_template = {
         {
             'Name': "Test Hotel",
             'AccessToken': "C66EF7B239D24632943D115EDE9CB810-EA00F8FD8294692C940F6B5A8F9453D",
-            'OutFolder': here,
+            'OutFolder': None,
             'FileName': 'testhotel_%Y%m%d.xls'
         },
     ]
@@ -288,6 +288,7 @@ def load_config(path_to_config=here):
     config_path = os.path.join(path_to_config, 'config.json')
     if not os.path.isfile(config_path):
         print(config_not_found_message.format(here=path_to_config))
+        config_template['Hotels'][0]['OutFolder'] = path_to_config
         json.dump(
             config_template,
             open(config_path, 'w'),
