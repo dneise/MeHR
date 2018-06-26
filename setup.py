@@ -7,15 +7,13 @@ setup(
     author="Dominik Neise",
     author_email='neised@phys.ethz.ch',
     url='https://github.com/dneise/MeHR',
-    packages=[
-        'mehr',
-    ],
+    py_modules=['mehr', ],
     install_requires=[],
     license="MIT license",
 
     entry_points={
         'console_scripts': [
-            'MeHR=mehr.__init__:entry',
+            'MeHR=mehr:entry',
         ],
     }
 )
