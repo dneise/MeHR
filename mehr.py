@@ -2,7 +2,7 @@ import os.path
 import time
 from types import SimpleNamespace
 from datetime import timedelta, datetime
-from mehr import (
+from mehr_test import (
     load_config,
     get_started_reservations_yesterday,
     mews_report_to_report_rows,
