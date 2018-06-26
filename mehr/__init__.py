@@ -3,6 +3,7 @@ from datetime import time as dt_time
 import requests
 import openpyxl
 import os
+from types import SimpleNamespace
 import time
 import iso8601
 from dateutil.parser import parse
@@ -31,16 +32,18 @@ def repeat():
 
 @command('main')
 def date(when='22.06.2018'):
-    config = load_config()
-    mews_report = get_started_reservations_yesterday(
-        config,
-        start_utc=None if when is None else parse(when).date()
-    )
-    rows = mews_report_to_report_rows(mews_report)
-    write_excel_output_file(
-        rows,
-        outfolder=config.OutFolder
-    )
+    configs = load_config()
+    for config in configs:
+        config = SimpleNamespace(**config)
+        mews_report = get_started_reservations_yesterday(
+            config,
+            start_utc=None if when is None else parse(when).date()
+        )
+        rows = mews_report_to_report_rows(mews_report)
+        write_excel_output_file(
+            rows,
+            outfolder=config.OutFolder
+        )
 
 
 def get_started_reservations_yesterday(
@@ -60,7 +63,7 @@ def get_started_reservations_yesterday(
     if start_utc is None:
         start_utc = today_midnight() - timedelta(days=1)
     if end_utc is None:
-        end_utc = start_utc + timedelta(days=100)
+        end_utc = start_utc + timedelta(days=1)
     return reservations_getAll(
         config,
         time_filter=time_filter,
@@ -165,8 +168,17 @@ def write_excel_output_file(rows, outfolder):
     wb = openpyxl.Workbook()
     sh = wb.active
     sh.title = "HoKo"
+
+    my_fill = openpyxl.styles.fills.PatternFill(
+        patternType='solid',
+        fgColor=openpyxl.styles.colors.Color(rgb='0099ccff')
+    )
     for col_index, col_name in enumerate(HOKO_EXCEL_REPORT_COLUMN_NAMES):
         sh.cell(row=1, column=col_index+1, value=col_name)
+        sh.cell(
+            row=1,
+            column=col_index+1
+        ).fill = my_fill
 
     for row_id, row in enumerate(rows):
         row_number = row_id + 2
