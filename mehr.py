@@ -38,8 +38,6 @@ def repeat():
         try:
             wait_for_next_execution()
             for config in configs:
-                print('Working on Hotel: {}'.format(
-                    config.Name))
                 mews_report, start_time = reservations_getAll(config)
                 rows = mews_report_to_report_rows(mews_report)
                 outpath = os.path.join(
