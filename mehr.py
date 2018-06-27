@@ -44,8 +44,8 @@ def repeat():
                     config.OutFolder,
                     start_time.strftime(config.FileName)
                 )
-                print('Writing Excel File: {}'.format(
-                    outpath))
+                print('{} Writing: {}'.format(
+                    time.asctime(), outpath))
                 write_excel_output_file(
                     rows,
                     outpath=outpath
