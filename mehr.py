@@ -34,15 +34,13 @@ def repeat():
         try:
             wait_for_next_execution()
             for config in configs:
-                print('Working on Hotel: {}'.format(
-                    config.Name))
                 mews_report, start_time = reservations_getAll(config)
                 outpath = os.path.join(
                     config.OutFolder,
                     start_time.strftime(config.FileName)
                 )
-                print('Writing File: {}'.format(
-                    outpath))
+                print('{} Writing: {}'.format(
+                    time.asctime(), outpath))
                 write_text_file(
                     mews_report,
                     outpath=outpath,
