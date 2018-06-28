@@ -1,12 +1,9 @@
 from datetime import datetime, timedelta
 from datetime import time as dt_time
 import requests
-import openpyxl
 import os
 import os.path
 import iso8601
-
-from hoko_iso_to_country import iso_to_country
 
 
 def last_midnight():
@@ -58,12 +55,16 @@ def reservations_getAll(
     return response.json(), start_utc
 
 
-def mews_report_to_report_rows(mews_report):
-    rows = []
+def write_text_file(mews_report, outpath, hoko_code):
+    outfolder = os.path.dirname(outpath)
+    if not os.path.isdir(outfolder):
+        os.makedirs(outfolder)
+
     customers = {
         customer['Id']: customer
         for customer in mews_report['Customers']
     }
+
     if mews_report['Spaces'] is not None:
         spaces = {
             space['Id']: space
@@ -72,110 +73,94 @@ def mews_report_to_report_rows(mews_report):
     else:
         spaces = {}
 
-    for reservation in mews_report['Reservations']:
-        row = {}
-        customer = customers[reservation['CustomerId']]
-        space = spaces.get(reservation['AssignedSpaceId'], None)
+    with open(outpath, 'w', encoding="latin-1") as outfile:
+        for reservation in mews_report['Reservations']:
+            customer = customers[reservation['CustomerId']]
+            try:
+                room_number = spaces[reservation['AssignedSpaceId']]['Number']
+            except:
+                room_number = ''
 
-        if customer['BirthDateUtc'] is not None:
-            birth_date = iso8601.parse_date(customer['BirthDateUtc'])
-            row.update({
-                'Geboren Tag': str(birth_date.day),
-                'Monat': str(birth_date.month),
-                'Jahr': str(birth_date.year),
-            })
-        else:
-            row.update({
-                'Geboren Tag': '',
-                'Monat': '',
-                'Jahr': '',
-            })
+            if customer['BirthDateUtc'] is not None:
+                date_of_birth_str = iso8601.parse_date(
+                    customer['BirthDateUtc']
+                ).strftime('%d.%m.%Y')
+            else:
+                date_of_birth_str = ''
 
-        row.update({
-            'Meldeschein Nr.': str(len(rows) + 1),
-            'Familienname': customer['LastName'],
-            'Vornamen': customer['FirstName'],
-            'Staatsangehörigkeit ISO': str(customer['NationalityCode']),
-            'Staatsangehörigkeit': iso_to_country.get((customer['NationalityCode']), ''),
-            'Ankunft': iso8601.parse_date(
-                reservation['StartUtc']
-            ).strftime('%d.%m.%Y'),
-            'Abreise': iso8601.parse_date(
-                reservation['EndUtc']
-            ).strftime('%d.%m.%Y'),
-            'Zimmernummer': 'unknown' if space is None else space['Number'],
-            'Ausweisnummer': ausweisnummer_from_customer(customer)
-        })
-        rows.append(row)
-    return rows
+            if customer['Address'] is not None:
+                address1 = customer['Address']['Line1']
+                address2 = customer['Address']['Line2']
+                zip_code = customer['Address']['PostalCode']
+                city_iso = customer['Address']['CountryCode']
+                city = customer['Address']['City']
+            else:
+                address1 = ''
+                address2 = ''
+                zip_code = ''
+                city_iso = ''
+                city = ''
 
-
-def write_excel_output_file(rows, outpath):
-    wb = openpyxl.Workbook()
-    sh = wb.active
-    sh.title = "HoKo"
-    from openpyxl.cell.cell import get_column_letter
-    for i in range(len(HOKO_EXCEL_REPORT_COLUMN_NAMES)):
-        sh.column_dimensions[get_column_letter(i+1)].width = 15
-
-    my_fill = openpyxl.styles.fills.PatternFill(
-        patternType='solid',
-        fgColor=openpyxl.styles.colors.Color(rgb='0099ccff')
-    )
-    for col_index, col_name in enumerate(HOKO_EXCEL_REPORT_COLUMN_NAMES):
-        sh.cell(row=1, column=col_index+1, value=col_name)
-        sh.cell(
-            row=1,
-            column=col_index+1
-        ).fill = my_fill
-
-    for row_id, row in enumerate(rows):
-        row_number = row_id + 2
-        for col_index, col_name in enumerate(HOKO_EXCEL_REPORT_COLUMN_NAMES):
-
-            sh.cell(
-                row=row_number,
-                column=col_index+1,
-                value=row[col_name]
+            doc_type, doc_number = doc_from_customer(customer)
+            line = (
+                '{hoko_code}|'
+                '{arrival_date:%Y%m%d}|'
+                '{last_name}|'
+                '{first_name}|'
+                '{date_of_birth_str}|'
+                '{nationality_iso}|'
+                '{address1}|'
+                '{address2}|'
+                '{zip_code}|'
+                '{city}|'
+                '{city_iso}|'
+                '{city_iso}|'
+                '{doc_number}|'
+                '{doc_type}|'
+                '{room_number}|'
+                '{number_adults}|'
+                '{number_children}|'
+                '{arrival_date:%d.%m.%Y}|'
+                '{departure_date:%d.%m.%Y}|'
+                '{departure_date:%d.%m.%Y}\r\n'
+            ).format(
+                hoko_code=hoko_code,
+                arrival_date=iso8601.parse_date(reservation['StartUtc']),
+                departure_date=iso8601.parse_date(reservation['EndUtc']),
+                last_name=customer['LastName'],
+                first_name=customer['FirstName'],
+                date_of_birth_str=date_of_birth_str,
+                room_number=room_number,
+                nationality_iso=customer['NationalityCode'],
+                address1=address1,
+                address2=address2,
+                zip_code=zip_code,
+                city=city,
+                city_iso=city_iso,
+                number_adults=reservation['AdultCount'],
+                number_children=reservation['ChildCount'],
+                doc_type=doc_type,
+                doc_number=doc_number,
             )
-
-    outfolder = os.path.dirname(outpath)
-    if not os.path.isdir(outfolder):
-        os.makedirs(outfolder)
-    wb.save(outpath)
+            outfile.write(line)
 
 
-HOKO_EXCEL_REPORT_COLUMN_NAMES = [
-    'Meldeschein Nr.',
-    'Zimmernummer',
-    'Familienname',
-    'Vornamen',
-    'Geboren Tag',
-    'Monat',
-    'Jahr',
-    'Staatsangehörigkeit',
-    'Staatsangehörigkeit ISO',
-    'Ausweisnummer',
-    'Ankunft',
-    'Abreise'
-]
-
-
-def ausweisnummer_from_customer(customer):
+def doc_from_customer(customer):
     ''' customers can identify with different documents
     we have a certain order of how much we like different documents
     so when a customer identifies with multiple documents we only give the
     number of the document we like best.
     '''
-    DOCUMENT_NAME_ORDER = [
-        'Passport',
-        'IdentityCard',
-        'Visa',
-        'DriversLicense'
-    ]
-    for document_name in DOCUMENT_NAME_ORDER:
-        if customer[document_name] is not None:
-            number = customer[document_name]['Number'].strip()
+    DOCU_TYPES = {
+        'Passport': "Reisepass",
+        'IdentityCard': "Personalausweis / ID",
+        'Visa': "Reisepass",
+        'DriversLicense': "Führerschein"
+    }
+
+    for doc_type in DOCU_TYPES:
+        if customer[doc_type] is not None:
+            number = customer[doc_type]['Number'].strip()
             # with the if below we just make sure that customers having
             # by accident or human error multiple documents, but some
             # without a number, are not identified with a passport with an
@@ -184,5 +169,5 @@ def ausweisnummer_from_customer(customer):
             # Not sure if this is needed, depends on business logic on the
             # mews side, which I do not know.
             if number:
-                return number
-    return ''
+                return DOCU_TYPES[doc_type], number
+    return '', ''
