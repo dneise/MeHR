@@ -1,7 +1,6 @@
 import os.path
 import time
 from datetime import timedelta
-from tqdm import tqdm
 
 from mehr_config import load_config
 from mehr_lib import (
@@ -24,18 +23,12 @@ def wait_for_next_execution(period=timedelta(hours=24).total_seconds()):
         return
     else:
         seconds_to_wait = int(next_execution - current_time)
-        pbar = tqdm(
-            iterable=range(seconds_to_wait),
-            desc='waiting...',
-            total=None,
-            leave=False,
-            unit='seconds',
-            unit_scale=False,
-            bar_format='{l_bar}{bar}{remaining}'
-        )
+        for i in range(int(seconds_to_wait//10)+1):
+            if current_time >= next_execution:
+                next_execution = current_time + period
+                return
 
-        for i in pbar:
-            time.sleep(1)
+            time.sleep(10)
 
 
 def repeat():
