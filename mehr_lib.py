@@ -7,7 +7,7 @@ import iso8601
 
 
 def last_midnight():
-    return datetime.combine(datetime.utcnow().date(), dt_time())
+    return datetime.combine(datetime.utcnow().date(), dt_time(3, 0))
 
 
 def reservations_getAll(
