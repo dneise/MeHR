@@ -1,0 +1,8 @@
+name: mehr_build
+dependencies:
+  - python=3.5.3
+  - python-dateutil
+  - requests
+  - iso8601
+  - pip:
+    - pyinstaller
