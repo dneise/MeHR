@@ -3,11 +3,7 @@ import time
 from datetime import timedelta
 
 from mehr_config import load_config
-from mehr_lib import (
-    reservations_getAll,
-    mews_report_to_report_rows,
-    write_excel_output_file
-)
+from mehr_lib import reservations_getAll, write_text_file
 
 
 here = os.path.dirname(os.path.realpath(__file__))
@@ -39,16 +35,16 @@ def repeat():
             wait_for_next_execution()
             for config in configs:
                 mews_report, start_time = reservations_getAll(config)
-                rows = mews_report_to_report_rows(mews_report)
                 outpath = os.path.join(
                     config.OutFolder,
                     start_time.strftime(config.FileName)
                 )
                 print('{} Writing: {}'.format(
                     time.asctime(), outpath))
-                write_excel_output_file(
-                    rows,
-                    outpath=outpath
+                write_text_file(
+                    mews_report,
+                    outpath=outpath,
+                    hoko_code=config.HoKoCode
                 )
         except (KeyboardInterrupt, SystemExit):
             return

@@ -11,7 +11,8 @@ config_template = {
         {
             'AccessToken': "C66EF7B239D24632943D115EDE9CB810-EA00F8FD8294692C940F6B5A8F9453D",
             'OutFolder': None,
-            'FileName': '1000_%d%m%Y_%M%H_testhotel_MeHR.xls'
+            'HoKoCode': '1234'
+            'FileName': '1234_%Y%m%d_%H%M_mews.txt',
         },
     ]
 }
