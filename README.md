@@ -63,7 +63,7 @@ distribute modified versions to your friends.
  * clone this repo
  * install py3.5.3 and the needed dependencies `conda env create -f environment.yml`
  * activate the just installed environment `conda activate mehr_build`
- * build the executables `build_exe.bat`
+ * build the executables `pyinstaller -F -w mehr.py`
  * find the executables in the `dist` folder
 
 # Setup
