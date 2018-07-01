@@ -1,5 +1,4 @@
 import sys
-from dateutil.parser import parse as datetime_parse
 from mehr_config import load_config
 from mehr_lib import MewsClient, write_text_file
 
@@ -23,7 +22,7 @@ def main():
         for hotel in config.Hotels:
             mews_report = mews.reservations(
                 hotel,
-                start_utc=datetime_parse(config.TestStartTime)
+                start_utc=config.TestStartTime
             )
             write_text_file(mews_report, config.outpath_template)
         return

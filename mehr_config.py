@@ -2,7 +2,7 @@ import sys
 from types import SimpleNamespace
 import os.path
 import json
-
+from dateutil.parser import parse as datetime_parse
 
 config_template = {
     'PlatformAddress': "https://demo.mews.li",
@@ -48,5 +48,8 @@ def load_config(path_to_config=None):
         config.OutFolder,
         '{hoko}_{timestamp:%Y%m%d_%H%M}_mews.txt'
     )
+
+    if config.TestMode:
+        config.TestStartTime = datetime_parse(config.TestStartTime)
 
     return config
