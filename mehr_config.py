@@ -26,7 +26,9 @@ Please, adjust the file to your personal needs.
 '''
 
 
-def load_config(path_to_config):
+def load_config(path_to_config=None):
+    if path_to_config is None:
+        path_to_config = os.path.dirname(os.path.realpath(__file__))
     config_path = os.path.join(path_to_config, 'config.json')
     if not os.path.isfile(config_path):
         print(config_not_found_message.format(here=path_to_config))
@@ -37,7 +39,14 @@ def load_config(path_to_config):
             indent=4,
         )
         sys.exit(0)
-    return json.load(
+    config = json.load(
         open(config_path),
         object_hook=lambda x: SimpleNamespace(**x)
     )
+
+    config.outpath_template = os.path.join(
+        config.OutFolder,
+        '{hoko}_{timestamp:%Y%m%d_%H%M}_mews.txt'
+    )
+
+    return config
