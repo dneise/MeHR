@@ -28,7 +28,7 @@ def main():
 
     else:
         for hotel in config.Hotels:
-            mews_report, start_time = mews.reservations(
+            mews_report = mews.reservations(
                 hotel,
                 start_utc=datetime_parse(config.TestStartTime)
             )

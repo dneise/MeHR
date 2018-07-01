@@ -174,7 +174,7 @@ def write_text_file(
                 '{departure_date:%d.%m.%Y}|'
                 '{departure_date:%d.%m.%Y}\r\n'
             ).format(
-                hoko_code=hoko_code,
+                hoko_code=mews_report['HoKoCode'],
                 arrival_date=iso8601.parse_date(reservation['StartUtc']),
                 departure_date=iso8601.parse_date(reservation['EndUtc']),
                 last_name=customer['LastName'],
