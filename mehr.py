@@ -8,8 +8,7 @@ def main():
     mews = MewsClient(
         platform_address=config.PlatformAddress,
         client_token=config.ClientToken,
-        hours_after_midnight=config.HoursAfterMidnight,
-        period=config.Period
+        hours_after_midnight=config.HoursAfterMidnight
     )
 
     if not config.TestMode:

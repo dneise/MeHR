@@ -4,6 +4,5 @@ dependencies:
   - python-dateutil
   - requests
   - iso8601
-  - parsedatetime
   - pip:
     - pyinstaller

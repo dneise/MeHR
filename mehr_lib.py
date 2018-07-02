@@ -18,13 +18,11 @@ class MewsClient:
         self,
         platform_address,
         client_token,
-        hours_after_midnight,
-        period
+        hours_after_midnight
     ):
         self.platform_address = platform_address
         self.client_token = client_token
         self.hours_after_midnight = hours_after_midnight
-        self.period = period
         self.last_execution = None
 
     def wait_for_next_execution(self):
@@ -35,7 +33,7 @@ class MewsClient:
         next_execution = (
             last_execution_midnight +
             timedelta(hours=self.hours_after_midnight) +
-            self.period
+            timedelta(days=1)
         )
         print('next_execution:', next_execution)
 

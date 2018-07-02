@@ -11,7 +11,6 @@ config_template = {
     'ClientToken': "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
     'OutFolder': None,
     'HoursAfterMidnight': 3,
-    'Period': "1 day",
     'TestMode': True,
     'TestStartTime': "22.06.2018 03:00",
     'Hotels': [
@@ -56,8 +55,6 @@ def load_config(path_to_config=None):
         config.OutFolder,
         '{hoko}_{timestamp:%Y%m%d_%H%M}_mews.txt'
     )
-
-    config.Period = parse_time_delta(config.Period)
 
     if config.TestMode:
         config.TestStartTime = datetime_parse(config.TestStartTime)
