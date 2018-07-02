@@ -4,7 +4,9 @@ from datetime import datetime, timedelta
 import iso8601
 import requests
 import unicodedata
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
+
+mews_gender_to_hoko_gender = defaultdict(str, Male='m', Female='w')
 
 
 def hours_after_last_midnight(hours=0):
@@ -159,7 +161,7 @@ def write_text_file(
                 FAMILIENNAME=customer['LastName'][:100],
                 VORNAME=customer['FirstName'][:100],
                 GEBURTSDATUM=date_of_birth_str,
-                GESCHLECHT=customer['Gender'],
+                GESCHLECHT=mews_gender_to_hoko_gender[customer['Gender']],
                 NATIONALITAET=customer['NationalityCode'],
                 ADRESSE=address1,
                 ADRESSE2=address2,
@@ -179,7 +181,7 @@ def write_text_file(
                 header_written = True
 
             line = (
-                '{ERSTELLDATUM:%d%m%Y};'
+                '{ERSTELLDATUM:%d.%m.%Y};'
                 '"{FAMILIENNAME}";'
                 '"{VORNAME}";'
                 '{GEBURTSDATUM};'
