@@ -125,7 +125,7 @@ def write_text_file(
     else:
         spaces = {}
 
-    with open(outpath, 'w', encoding="latin-1") as outfile:
+    with open(outpath, 'w', encoding="latin-1", errors='replace') as outfile:
         for reservation in mews_report['Reservations']:
             customer = customers[reservation['CustomerId']]
             try:
@@ -194,7 +194,7 @@ def write_text_file(
                 doc_type=doc_type,
                 doc_number=doc_number,
             )
-            outfile.write(line.encode('latin-1', 'replace'))
+            outfile.write(line)
 
 
 def doc_from_customer(customer):
