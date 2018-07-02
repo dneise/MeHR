@@ -18,7 +18,7 @@ In order to perform the upload uses the
 the [SiDAP client](https://www.hotelkontrolle.zh.ch/HoKoDMZ/pages/info.xhtml)
 provided by the zurich police for this purpose.
 
-## Configuration and Usage
+## Preparation
 
 In order to be able to download your customer profiles from Mews this tool
 needs two cryptographic keys:
@@ -37,15 +37,46 @@ Once you have configured mehr correctly, just save the `config.json` and start m
 
 In order to keep it running you will have to keep the window open forever and never log out. If you do not want this, you can install Mehr as a service as outlined below.
 
-# Installation as a service
 
-In order to install `mehr.exe` on your Windows machine as a service, you will have to use a tool called `NSSM`, which can be [downloaded here](https://nssm.cc/download). I used the "nssm 2.24 (2014-08-31)" for testing.
+# Setup
 
-This tool can be used to install any program as a service to run in the background of your computer, NSSM claims to even restart the program should it ever crash and restart it.
+ * find a place to put MeHR, e.g. close to the SiDAP client:
+    - if your SiDAP Client is installed in `C:\SiDAP\SiDAP-Client`
+    - then there is an upload folder here: `C:\SiDAP\SiDAP-Client\Upload`
+    - I propose you make a folder called `MeHR` in the Upload folder.
+    - --> `C:\SiDAP\SiDAP-Client\Upload\MeHR`
+ * download and copy `mehr.exe` to that place
+ * create a `config.json` file and enter the required Mews and HoKo credentials
+   For your convenience, `mehr.exe` creates this config file for you, so you
+   only need to fill in the information.
+    - in `OutFolder` finally you want to put this: `C:\SiDAP\SiDAP-Client\Upload\HoKo`
+    - any file in that folder are automatically uploaded to the Zurich Hotel Kontrolle
+    - so for testing, when you do not yet trust MeHR to do the job correctly, it is best to
+      invent a different place, e.g. `C:\SiDAP\SiDAP-Client\Upload\MeHR-test` or so.
+    - Also you'll have to replace every backslash `\` in the path with a double backslash `\\`
+  *
 
-Dedicated Help on how to install any program as a service can be found on the NSSM website.
 
-I did not need administrator rights to do this on my machine, but I also did not restrict my user very much.
+# Install MeHR as windows service
+
+ * Get NSSM V2.24 from <http://nssm.cc/release/nssm-2.24.zip>
+ * unpack it
+ * use nssm to install `MeHR.exe` as a service using the nssm GUI.
+ * don't forget to setup stdout and stderr as logfiles.
+ * go to the windows "services" app and start the MeHR service
+ * observe how one textfile per hotel is created immediately in the destination specified in the config file.
+
+
+# Build executables on Windows
+
+ * Install Miniconda (or Anaconda).
+ * Download mehr sources zip-folder from github; unzip it.
+ * start Anaconda Prompt and go to mehr folder.
+ * install dependencies `conda env create -f environment.yml`
+ * activate environment `conda activate mehr_build`
+ * build the executables `pyinstaller -F -w mehr.py`
+ * find the executables in the `dist` folder
+
 
 
 # [License](LICENSE)
@@ -53,33 +84,3 @@ I did not need administrator rights to do this on my machine, but I also did not
 This tool is both free of charge and open source, i.e. you can use it for your
 hotel without paying me a dime and you can modify it as you like and even
 distribute modified versions to your friends.
-
-
-
-# Build executables on Windows
-
- * Install Anaconda
- * Install a git client
- * clone this repo
- * install py3.5.3 and the needed dependencies `conda env create -f environment.yml`
- * activate the just installed environment `conda activate mehr_build`
- * build the executables `build_exe.bat`
- * find the executables in the `dist` folder
-
-# Setup
-
- * execute `MeHR_test.exe` just once in order to create the `config.json`.
- * execute it again and observe that it really creates a txt file.
- * enter your Hotel information into the `config.json`
- * optionally: move the `MeHR.exe` and `config.json` into a place of your choice, e.g. `C:\MeHR`
-
-# Install MeHR as windows service
-
- * Get NSSM V2.24 from <http://nssm.cc/release/nssm-2.24.zip>
- * unpack it, no need to install anything
- * use nssm to install `MeHR.exe` as a service using the nssm GUI.
- * don't forget to setup stdout and stderr as logfiles.
- * got to the windows "services" app and start the MeHR service
- * observe how one textfile per hotel is created immediately in the destination specified in the config file.
-
-

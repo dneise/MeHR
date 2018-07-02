@@ -2,18 +2,12 @@ from setuptools import setup
 
 setup(
     name='MeHR',
-    version='0.1.0',
+    version='0.2.0',
     description="Mews HoKo Reporter",
     author="Dominik Neise",
     author_email='neised@phys.ethz.ch',
     url='https://github.com/dneise/MeHR',
-    py_modules=['mehr', ],
+    py_modules=['mehr', 'mehr_lib', 'mehr_config'],
     install_requires=[],
-    license="MIT license",
-
-    entry_points={
-        'console_scripts': [
-            'MeHR=mehr:entry',
-        ],
-    }
+    license="MIT license"
 )
