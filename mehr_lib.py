@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import iso8601
 import requests
 import unicodedata
+from collections import OrderedDict
 
 
 def hours_after_last_midnight(hours=0):
@@ -125,6 +126,8 @@ def write_text_file(
         spaces = {}
 
     with open(outpath, 'w', encoding="latin-1") as outfile:
+        header_written = False
+
         for reservation in mews_report['Reservations']:
             customer = customers[reservation['CustomerId']]
             try:
@@ -143,56 +146,57 @@ def write_text_file(
                 address1 = customer['Address']['Line1']
                 address2 = customer['Address']['Line2']
                 zip_code = customer['Address']['PostalCode']
-                city_iso = customer['Address']['CountryCode']
                 city = customer['Address']['City']
             else:
                 address1 = ''
                 address2 = ''
                 zip_code = ''
-                city_iso = ''
                 city = ''
 
             doc_type, doc_number = doc_from_customer(customer)
-            line = (
-                '{hoko_code}|'
-                '{arrival_date:%Y%m%d}|'
-                '{last_name}|'
-                '{first_name}|'
-                '{date_of_birth_str}|'
-                '{nationality_iso}|'
-                '{address1}|'
-                '{address2}|'
-                '{zip_code}|'
-                '{city}|'
-                '{city_iso}|'
-                '{city_iso}|'
-                '{doc_number}|'
-                '{doc_type}|'
-                '{room_number}|'
-                '{number_adults}|'
-                '{number_children}|'
-                '{arrival_date:%d.%m.%Y}|'
-                '{departure_date:%d.%m.%Y}|'
-                '{departure_date:%d.%m.%Y}\r\n'
-            ).format(
-                hoko_code=mews_report['HoKoCode'],
-                arrival_date=iso8601.parse_date(reservation['StartUtc']),
-                departure_date=iso8601.parse_date(reservation['EndUtc']),
-                last_name=customer['LastName'],
-                first_name=customer['FirstName'],
-                date_of_birth_str=date_of_birth_str,
-                room_number=room_number,
-                nationality_iso=customer['NationalityCode'],
-                address1=address1,
-                address2=address2,
-                zip_code=zip_code,
-                city=city,
-                city_iso=city_iso,
-                number_adults=reservation['AdultCount'],
-                number_children=reservation['ChildCount'],
-                doc_type=doc_type,
-                doc_number=doc_number,
+            data = OrderedDict(
+                ERSTELLDATUM=mews_report['ReportStartTimeUtc'],
+                FAMILIENNAME=customer['LastName'][:100],
+                VORNAME=customer['FirstName'][:100],
+                GEBURTSDATUM=date_of_birth_str,
+                GESCHLECHT=customer['Gender'],
+                NATIONALITAET=customer['NationalityCode'],
+                ADRESSE=address1,
+                ADRESSE2=address2,
+                PLZ=zip_code,
+                ORT=city,
+                AUSWEISTYP=doc_type,
+                AUSWEIS_NR=doc_number[:100],
+                ZIMMER_NR=room_number[:10],
+                ANZPERS_BIS16=reservation['ChildCount'],
+                ANZPERS_AB16=str(int(reservation['AdultCount']) - 1),
+                ANKUNFTSDATUM=iso8601.parse_date(reservation['StartUtc']),
+                ABREISEDATUM=iso8601.parse_date(reservation['EndUtc']),
             )
+            if not header_written:
+                outfile.write(';'.join(data.keys()))
+                outfile.write('\r\n')
+                header_written = True
+
+            line = (
+                '{ERSTELLDATUM:%d%m%Y};'
+                '"{FAMILIENNAME}";'
+                '"{VORNAME}";'
+                '{GEBURTSDATUM};'
+                '"{GESCHLECHT}";'
+                '"{NATIONALITAET}";'
+                '"{ADRESSE}";'
+                '"{ADRESSE2}";'
+                '"{PLZ}";'
+                '"{ORT}";'
+                '"{AUSWEISTYP}";'
+                '"{AUSWEIS_NR}";'
+                '{ZIMMER_NR};'
+                '{ANZPERS_BIS16};'
+                '{ANZPERS_AB16};'
+                '{ANKUNFTSDATUM:%d.%m.%Y};'
+                '{ABREISEDATUM:%d.%m.%Y}\r\n'
+            ).format(**data)
             outfile.write(
                 unicodedata.normalize(
                     'NFKD', line
@@ -209,10 +213,10 @@ def doc_from_customer(customer):
     number of the document we like best.
     '''
     DOCU_TYPES = {
-        'Passport': "Reisepass",
-        'IdentityCard': "Personalausweis / ID",
-        'Visa': "Reisepass",
-        'DriversLicense': "Führerschein"
+        'Passport': "PASS",
+        'IdentityCard': "ID",
+        'Visa': "AUSW",
+        'DriversLicense': "AUTO"
     }
 
     for doc_type in DOCU_TYPES:

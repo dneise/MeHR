@@ -53,7 +53,7 @@ def load_config(path_to_config=None):
 
     config.outpath_template = os.path.join(
         config.OutFolder,
-        '{hoko}_{timestamp:%Y%m%d_%H%M}_mews.txt'
+        '{hoko}_{timestamp:%Y%m%d_%H%M}_GEN_MEW.csv'
     )
 
     if config.TestMode:
