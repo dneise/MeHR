@@ -3,6 +3,7 @@ import time
 from datetime import datetime, timedelta
 import iso8601
 import requests
+import unicodedata
 
 
 def hours_after_last_midnight(hours=0):
@@ -123,7 +124,7 @@ def write_text_file(
     else:
         spaces = {}
 
-    with open(outpath, 'w', encoding="latin-1", errors='replace') as outfile:
+    with open(outpath, 'w', encoding="latin-1") as outfile:
         for reservation in mews_report['Reservations']:
             customer = customers[reservation['CustomerId']]
             try:
@@ -192,7 +193,13 @@ def write_text_file(
                 doc_type=doc_type,
                 doc_number=doc_number,
             )
-            outfile.write(line)
+            outfile.write(
+                unicodedata.normalize(
+                    'NFKD', line
+                ).encode(
+                    'ascii', 'ignore'
+                ).decode('latin-1')
+            )
 
 
 def doc_from_customer(customer):
