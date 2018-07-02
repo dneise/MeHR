@@ -3,8 +3,6 @@ from types import SimpleNamespace
 import os.path
 import json
 from dateutil.parser import parse as datetime_parse
-from datetime import datetime
-import parsedatetime as pdt
 
 config_template = {
     'PlatformAddress': "https://demo.mews.li",
@@ -26,11 +24,6 @@ There is no "config.json" file in {here}
 I am going to make one for you now.
 Please, adjust the file to your personal needs.
 '''
-
-
-def parse_time_delta(time_str):
-    cal = pdt.Calendar()
-    return cal.parseDT(time_str, sourceTime=datetime.min)[0] - datetime.min
 
 
 def load_config(path_to_config=None):
