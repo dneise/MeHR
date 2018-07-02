@@ -101,6 +101,26 @@ class MewsClient:
         mews_report['HoKoCode'] = hotel_config.HoKoCode
         return mews_report
 
+csv_columns = [
+    'ERSTELLDATUM',
+    'FAMILIENNAME',
+    'VORNAME',
+    'GEBURTSDATUM',
+    'GESCHLECHT',
+    'NATIONALITAET',
+    'ADRESSE',
+    'ADRESSE2',
+    'PLZ',
+    'ORT',
+    'AUSWEISTYP',
+    'AUSWEIS_NR',
+    'ZIMMER_NR',
+    'ANZPERS_BIS16',
+    'ANZPERS_AB16',
+    'ANKUNFTSDATUM',
+    'ABREISEDATUM',
+]
+
 
 def write_text_file(
     mews_report,
@@ -128,7 +148,7 @@ def write_text_file(
         spaces = {}
 
     with open(outpath, 'w', encoding="latin-1") as outfile:
-        header_written = False
+        outfile.write(';'.join(csv_columns) + '\n')
 
         for reservation in mews_report['Reservations']:
             customer = customers[reservation['CustomerId']]
@@ -175,10 +195,6 @@ def write_text_file(
                 ANKUNFTSDATUM=iso8601.parse_date(reservation['StartUtc']),
                 ABREISEDATUM=iso8601.parse_date(reservation['EndUtc']),
             )
-            if not header_written:
-                outfile.write(';'.join(data.keys()))
-                outfile.write('\r\n')
-                header_written = True
 
             line = (
                 '{ERSTELLDATUM:%d.%m.%Y};'
@@ -197,7 +213,7 @@ def write_text_file(
                 '{ANZPERS_BIS16};'
                 '{ANZPERS_AB16};'
                 '{ANKUNFTSDATUM:%d.%m.%Y};'
-                '{ABREISEDATUM:%d.%m.%Y}\r\n'
+                '{ABREISEDATUM:%d.%m.%Y}\n'
             ).format(**data)
             outfile.write(
                 unicodedata.normalize(
