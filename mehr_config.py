@@ -1,5 +1,6 @@
 import sys
 from types import SimpleNamespace
+import os
 import os.path
 import json
 from dateutil.parser import parse as datetime_parse
@@ -28,7 +29,7 @@ Please, adjust the file to your personal needs.
 
 def load_config(path_to_config=None):
     if path_to_config is None:
-        path_to_config = os.path.dirname(os.path.realpath(__file__))
+        path_to_config = os.getcwd()
     config_path = os.path.join(path_to_config, 'config.json')
     if not os.path.isfile(config_path):
         print(config_not_found_message.format(here=path_to_config))
