@@ -6,3 +6,4 @@ dependencies:
   - iso8601
   - pip:
     - pyinstaller
+    - parsedatetime

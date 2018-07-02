@@ -3,12 +3,15 @@ from types import SimpleNamespace
 import os.path
 import json
 from dateutil.parser import parse as datetime_parse
+from datetime import datetime
+import parsedatetime as pdt
 
 config_template = {
     'PlatformAddress': "https://demo.mews.li",
     'ClientToken': "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
     'OutFolder': None,
     'HoursAfterMidnight': 3,
+    'Period': "1 day",
     'TestMode': True,
     'TestStartTime': "22.06.2018 03:00",
     'Hotels': [
@@ -24,6 +27,11 @@ There is no "config.json" file in {here}
 I am going to make one for you now.
 Please, adjust the file to your personal needs.
 '''
+
+
+def parse_time_delta(time_str):
+    cal = pdt.Calendar()
+    return cal.parseDT(time_str, sourceTime=datetime.min)[0] - datetime.min
 
 
 def load_config(path_to_config=None):
@@ -48,6 +56,8 @@ def load_config(path_to_config=None):
         config.OutFolder,
         '{hoko}_{timestamp:%Y%m%d_%H%M}_mews.txt'
     )
+
+    config.Period = parse_time_delta(config.Period)
 
     if config.TestMode:
         config.TestStartTime = datetime_parse(config.TestStartTime)

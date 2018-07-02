@@ -18,11 +18,13 @@ class MewsClient:
         self,
         platform_address,
         client_token,
-        hours_after_midnight
+        hours_after_midnight,
+        period
     ):
         self.platform_address = platform_address
         self.client_token = client_token
         self.hours_after_midnight = hours_after_midnight
+        self.period = period
         self.last_execution = None
 
     def wait_for_next_execution(self):
@@ -33,9 +35,9 @@ class MewsClient:
         next_execution = (
             last_execution_midnight +
             timedelta(hours=self.hours_after_midnight) +
-            timedelta(hours=24) +
-            timedelta(minutes=10)
+            self.period
         )
+        print('next_execution:', next_execution)
 
         while True:
             if not datetime.utcnow() >= next_execution:
@@ -192,7 +194,7 @@ def write_text_file(
                 doc_type=doc_type,
                 doc_number=doc_number,
             )
-            outfile.write(line)
+            outfile.write(line.encode('latin-1', 'replace'))
 
 
 def doc_from_customer(customer):
