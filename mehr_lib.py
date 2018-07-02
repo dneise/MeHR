@@ -39,7 +39,7 @@ class MewsClient:
             timedelta(hours=self.hours_after_midnight) +
             timedelta(days=1)
         )
-        print('next_execution:', next_execution)
+        print(time.asctime(), 'next_execution:', next_execution, flush=True)
 
         while True:
             if not datetime.utcnow() >= next_execution:
@@ -147,6 +147,7 @@ def write_text_file(
     else:
         spaces = {}
 
+    print(time.asctime(), 'writing:', outpath, flush=True)
     with open(outpath, 'w', encoding="latin-1") as outfile:
         outfile.write(';'.join(csv_columns) + '\n')
 
