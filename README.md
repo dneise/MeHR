@@ -20,12 +20,7 @@ provided by the zurich police for this purpose.
 
 ## Preparation
 
-In order to be able to download your customer profiles from Mews this tool
-needs two cryptographic keys:
- * the `AccessToken` (one per property) and
- * the `ClientToken`.
-
-After installing MeHR please ask Mews to give you a `ClientToken` and one `AccessToken` per property you would like to creat ereports for.
+In order to use MeHR you need to request the "Connector Integration SiDAP" [via email](mailto:integrations@mewssystems.com) from Mews, Mews will then provide you with the `ClientToken` and you can find the `AccessToken`s in the Mews Commander under: Settings -> Integrations.
 
 In order to install MeHR you only need to download `mehr.exe` from here:
 
