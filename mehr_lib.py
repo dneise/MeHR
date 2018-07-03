@@ -175,6 +175,10 @@ def write_text_file(
                 address2 = ''
                 zip_code = ''
                 city = ''
+            address1 = address1 if address1 is not None else ''
+            address2 = address2 if address2 is not None else ''
+            zip_code = zip_code if zip_code is not None else ''
+            city = city if city is not None else ''
 
             doc_type, doc_number = doc_from_customer(customer)
             data = OrderedDict(
