@@ -107,11 +107,17 @@ csv_columns = [
     'VORNAME',
     'GEBURTSDATUM',
     'GESCHLECHT',
+    'GEBURTSORT',
+    'HEIMATORT',
     'NATIONALITAET',
     'ADRESSE',
     'ADRESSE2',
     'PLZ',
     'ORT',
+    'LAND',
+    'LANDESKENNZEICHEN',
+    'BERUF',
+    'FZ_KENNZEICHEN',
     'AUSWEISTYP',
     'AUSWEIS_NR',
     'ZIMMER_NR',
@@ -120,6 +126,24 @@ csv_columns = [
     'ANKUNFTSDATUM',
     'ABREISEDATUM',
 ]
+
+
+def make_latin1_compliant(string):
+    result = ''
+    for char in string:
+        try:
+            result += unicodedata.normalize(
+                'NFKC', char
+            ).encode(
+                'latin-1'
+            ).decode('latin-1')
+        except UnicodeEncodeError:
+            result += unicodedata.normalize(
+                'NFKD', char
+            ).encode(
+                'latin-1', 'ignore'
+            ).decode('latin-1')
+    return result
 
 
 def write_text_file(
@@ -187,11 +211,17 @@ def write_text_file(
                 VORNAME=customer['FirstName'][:100],
                 GEBURTSDATUM=date_of_birth_str,
                 GESCHLECHT=mews_gender_to_hoko_gender[customer['Gender']],
+                GEBURTSORT='',
+                HEIMATORT='',
                 NATIONALITAET=customer['NationalityCode'],
                 ADRESSE=address1,
                 ADRESSE2=address2,
                 PLZ=zip_code,
                 ORT=city,
+                LAND='',
+                LANDESKENNZEICHEN='',
+                BERUF='',
+                FZ_KENNZEICHEN='',
                 AUSWEISTYP=doc_type,
                 AUSWEIS_NR=doc_number[:100],
                 ZIMMER_NR=room_number[:10],
@@ -207,11 +237,17 @@ def write_text_file(
                 '"{VORNAME}";'
                 '{GEBURTSDATUM};'
                 '"{GESCHLECHT}";'
+                '"{GEBURTSORT}";'
+                '"{HEIMATORT}";'
                 '"{NATIONALITAET}";'
                 '"{ADRESSE}";'
                 '"{ADRESSE2}";'
                 '"{PLZ}";'
                 '"{ORT}";'
+                '"{LAND}";'
+                '"{LANDESKENNZEICHEN}";'
+                '"{BERUF}";'
+                '"{FZ_KENNZEICHEN}";'
                 '"{AUSWEISTYP}";'
                 '"{AUSWEIS_NR}";'
                 '{ZIMMER_NR};'
@@ -220,13 +256,8 @@ def write_text_file(
                 '{ANKUNFTSDATUM:%d.%m.%Y};'
                 '{ABREISEDATUM:%d.%m.%Y}\n'
             ).format(**data)
-            outfile.write(
-                unicodedata.normalize(
-                    'NFKD', line
-                ).encode(
-                    'ascii', 'ignore'
-                ).decode('latin-1')
-            )
+            line = make_latin1_compliant(line)
+            outfile.write(line)
 
 
 def doc_from_customer(customer):
