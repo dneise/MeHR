@@ -4,7 +4,8 @@ from datetime import datetime, timedelta
 import iso8601
 import requests
 import unicodedata
-from collections import OrderedDict, defaultdict
+from collections import defaultdict
+from types import SimpleNamespace
 
 mews_gender_to_hoko_gender = defaultdict(str, Male='m', Female='w')
 
@@ -101,32 +102,6 @@ class MewsClient:
         mews_report['HoKoCode'] = hotel_config.HoKoCode
         return mews_report
 
-csv_columns = [
-    'ERSTELLDATUM',
-    'FAMILIENNAME',
-    'VORNAME',
-    'GEBURTSDATUM',
-    'GESCHLECHT',
-    'GEBURTSORT',
-    'HEIMATORT',
-    'NATIONALITAET',
-    'ADRESSE',
-    'ADRESSE2',
-    'PLZ',
-    'ORT',
-    'LAND',
-    'LANDESKENNZEICHEN',
-    'BERUF',
-    'FZ_KENNZEICHEN',
-    'AUSWEISTYP',
-    'AUSWEIS_NR',
-    'ZIMMER_NR',
-    'ANZPERS_BIS16',
-    'ANZPERS_AB16',
-    'ANKUNFTSDATUM',
-    'ABREISEDATUM',
-]
-
 
 def make_latin1_compliant(string):
     result = ''
@@ -147,115 +122,19 @@ def make_latin1_compliant(string):
 
 
 def write_text_file(
-    mews_report,
-    outpath_template
+    outpath,
+    output_entries
 ):
-    outpath = outpath_template.format(
-        hoko=mews_report['HoKoCode'],
-        timestamp=mews_report['ReportStartTimeUtc']
-    )
     outfolder = os.path.dirname(outpath)
     if not os.path.isdir(outfolder):
         os.makedirs(outfolder)
 
-    customers = {
-        customer['Id']: customer
-        for customer in mews_report['Customers']
-    }
-
-    if mews_report['Spaces'] is not None:
-        spaces = {
-            space['Id']: space
-            for space in mews_report['Spaces']
-        }
-    else:
-        spaces = {}
-
-    print(time.asctime(), 'writing:', outpath, flush=True)
     with open(outpath, 'w', encoding="latin-1") as outfile:
-        outfile.write(';'.join(csv_columns) + '\n')
-
-        for reservation in mews_report['Reservations']:
-            customer = customers[reservation['CustomerId']]
-            try:
-                room_number = spaces[reservation['AssignedSpaceId']]['Number']
-            except:
-                room_number = ''
-
-            if customer['BirthDateUtc'] is not None:
-                date_of_birth_str = iso8601.parse_date(
-                    customer['BirthDateUtc']
-                ).strftime('%d.%m.%Y')
-            else:
-                date_of_birth_str = ''
-
-            if customer['Address'] is not None:
-                address1 = customer['Address']['Line1']
-                address2 = customer['Address']['Line2']
-                zip_code = customer['Address']['PostalCode']
-                city = customer['Address']['City']
-            else:
-                address1 = ''
-                address2 = ''
-                zip_code = ''
-                city = ''
-            address1 = address1 if address1 is not None else ''
-            address2 = address2 if address2 is not None else ''
-            zip_code = zip_code if zip_code is not None else ''
-            city = city if city is not None else ''
-
-            doc_type, doc_number = doc_from_customer(customer)
-            data = OrderedDict(
-                ERSTELLDATUM=mews_report['ReportStartTimeUtc'],
-                FAMILIENNAME=customer['LastName'][:100],
-                VORNAME=customer['FirstName'][:100],
-                GEBURTSDATUM=date_of_birth_str,
-                GESCHLECHT=mews_gender_to_hoko_gender[customer['Gender']],
-                GEBURTSORT='',
-                HEIMATORT='',
-                NATIONALITAET=customer['NationalityCode'],
-                ADRESSE=address1,
-                ADRESSE2=address2,
-                PLZ=zip_code,
-                ORT=city,
-                LAND='',
-                LANDESKENNZEICHEN='',
-                BERUF='',
-                FZ_KENNZEICHEN='',
-                AUSWEISTYP=doc_type,
-                AUSWEIS_NR=doc_number[:100],
-                ZIMMER_NR=room_number[:10],
-                ANZPERS_BIS16=reservation['ChildCount'],
-                ANZPERS_AB16=str(int(reservation['AdultCount']) - 1),
-                ANKUNFTSDATUM=iso8601.parse_date(reservation['StartUtc']),
-                ABREISEDATUM=iso8601.parse_date(reservation['EndUtc']),
-            )
-
+        outfile.write(';'.join([c[0] for c in csv_columns]) + '\n')
+        for entry in output_entries:
             line = (
-                '{ERSTELLDATUM:%d.%m.%Y};'
-                '"{FAMILIENNAME}";'
-                '"{VORNAME}";'
-                '{GEBURTSDATUM};'
-                '"{GESCHLECHT}";'
-                '"{GEBURTSORT}";'
-                '"{HEIMATORT}";'
-                '"{NATIONALITAET}";'
-                '"{ADRESSE}";'
-                '"{ADRESSE2}";'
-                '"{PLZ}";'
-                '"{ORT}";'
-                '"{LAND}";'
-                '"{LANDESKENNZEICHEN}";'
-                '"{BERUF}";'
-                '"{FZ_KENNZEICHEN}";'
-                '"{AUSWEISTYP}";'
-                '"{AUSWEIS_NR}";'
-                '{ZIMMER_NR};'
-                '{ANZPERS_BIS16};'
-                '{ANZPERS_AB16};'
-                '{ANKUNFTSDATUM:%d.%m.%Y};'
-                '{ABREISEDATUM:%d.%m.%Y}\n'
-            ).format(**data)
+                ';'.join([c[1] for c in csv_columns]) + '\n'
+            ).format(e=entry)
             line = make_latin1_compliant(line)
             outfile.write(line)
 
@@ -286,3 +165,100 @@ def doc_from_customer(customer):
             if number:
                 return DOCU_TYPES[doc_type], number
     return '', ''
+
+
+def make_outpath(outpath_template, mews_report):
+    return outpath_template.format(
+        hoko=mews_report['HoKoCode'],
+        timestamp=mews_report['ReportStartTimeUtc']
+    )
+
+
+def parse_date_to_ddmmyyyy(dt):
+    try:
+        return iso8601.parse_date(dt).strftime('%d.%m.%Y')
+    except:
+        return ''
+
+
+def spaces_from_mews_report(mews_report):
+    if mews_report['Spaces'] is not None:
+        spaces = {
+            space['Id']: space
+            for space in mews_report['Spaces']
+        }
+    else:
+        spaces = {}
+
+    spaces = defaultdict(lambda x: {'Number': ''}, **spaces)
+    return spaces
+
+
+def customers_from_mews_report(mews_report):
+    customers = {}
+    for customer in mews_report['Customers']:
+        foo = customer.get('Address', {})
+        if foo is None:
+            foo = {}
+        customer['Address'] = defaultdict(str, foo)
+        customers[customer['Id']] = customer
+    return customers
+
+
+def make_output_entries(mews_report):
+
+    customers = customers_from_mews_report(mews_report)
+    spaces = spaces_from_mews_report(mews_report)
+
+    output_entries = []
+    for reservation in mews_report['Reservations']:
+        customer = customers[reservation['CustomerId']]
+        output_entries.append(SimpleNamespace(
+            creation_date=mews_report['ReportStartTimeUtc'],
+            last_name=customer.get('LastName', '')[:100],
+            first_name=customer.get('FirstName', '')[:100],
+            date_of_birth_str=parse_date_to_ddmmyyyy(customer['BirthDateUtc']),
+            gender=mews_gender_to_hoko_gender[customer['Gender']],
+            nationality=customer.get('NationalityCode', ''),
+            address1=customer['Address']['Line1'][:100],
+            address2=customer['Address']['Line2'][:100],
+            zip_code=customer['Address']['PostalCode'][:100],
+            city=customer['Address']['City'][:100],
+            doc_type=doc_from_customer(customer)[0],
+            doc_number_str=doc_from_customer(customer)[1][:100],
+            room_number=spaces[reservation['AssignedSpaceId']]['Number'][:10],
+            number_of_children=reservation.get('ChildCount', 0),
+            number_of_adults=int(reservation.get('AdultCount')) - 1,
+            arrival_date=parse_date_to_ddmmyyyy(reservation['StartUtc']),
+            departure_date=parse_date_to_ddmmyyyy(reservation['EndUtc']),
+        ))
+
+
+
+    return output_entries
+
+csv_columns = [
+    ('ERSTELLDATUM', '{e.creation_date:%d.%m.%Y}'),
+    ('FAMILIENNAME', '"{e.last_name}"'),
+    ('VORNAME', '"{e.first_name}"'),
+    ('GEBURTSDATUM', '{e.date_of_birth_str}'),
+    ('GESCHLECHT', '"{e.gender}"'),
+    ('GEBURTSORT', '""'),
+    ('HEIMATORT', '""'),
+    ('NATIONALITAET', '"{e.nationality}"'),
+    ('ADRESSE', '"{e.address1}"'),
+    ('ADRESSE2', '"{e.address2}"'),
+    ('PLZ', '"{e.zip_code}"'),
+    ('ORT', '"{e.city}"'),
+    ('LAND', '""'),
+    ('LANDESKENNZEICHEN', '""'),
+    ('BERUF', '""'),
+    ('FZ_KENNZEICHEN', '""'),
+    ('AUSWEISTYP', '"{e.doc_type}"'),
+    ('AUSWEIS_NR', '"{e.doc_number_str}"'),
+    ('ZIMMER_NR', '"{e.room_number}"'),
+    ('ANZPERS_BIS16', '"{e.number_of_children}"'),
+    ('ANZPERS_AB16', '"{e.number_of_adults}"'),
+    ('ANKUNFTSDATUM', '{e.arrival_date}'),
+    ('ABREISEDATUM', '{e.departure_date}'),
+]

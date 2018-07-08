@@ -50,6 +50,12 @@ def load_config(path_to_config=None):
         '{hoko}_{timestamp:%Y%m%d_%H%M}_GEN_MEW.csv'
     )
 
+    if 'TestMode' not in config.__dict__:
+        config.TestMode = False
+
+    if 'HoKoTest' not in config.__dict__:
+        config.HoKoTest = False
+
     if config.TestMode:
         config.TestStartTime = datetime_parse(config.TestStartTime)
 
