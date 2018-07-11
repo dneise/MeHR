@@ -201,6 +201,9 @@ def customers_from_mews_report(mews_report):
         if foo is None:
             foo = {}
         customer['Address'] = defaultdict(str, foo)
+        for k in customer['Address']:
+            if customer['Address'][k] is None:
+                customer['Address'][k] = ''
         customers[customer['Id']] = customer
     return customers
 
