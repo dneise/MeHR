@@ -42,9 +42,8 @@ class MewsClient:
         )
         print(time.asctime(), 'next_execution:', next_execution, flush=True)
 
-        while True:
-            if not datetime.utcnow() >= next_execution:
-                time.sleep(10)
+        while datetime.utcnow() < next_execution:
+            time.sleep(10)
         return
 
     def reservations(
