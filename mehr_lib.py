@@ -93,7 +93,7 @@ class MewsClient:
                 "Extent": extent,
             }
         )
-        self.last_execution = datetime.utcnow()
+        self.last_execution = datetime.now()
 
         mews_report = response.json()
         mews_report['ReportStartTimeUtc'] = start_utc
