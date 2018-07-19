@@ -70,12 +70,12 @@ def main():
 
     else:  # Normal Mode
         while True:
+            mews.wait_for_next_execution()
             for hotel in config.Hotels:
                 mews_report = mews.reservations(hotel)
                 outpath = make_outpath(config.outpath_template, mews_report)
                 output_entries = make_output_entries(mews_report)
                 write_text_file(outpath, output_entries)
-            mews.wait_for_next_execution()
 
 if __name__ == '__main__':
     try:

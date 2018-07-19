@@ -28,7 +28,7 @@ class MewsClient:
         self.platform_address = platform_address
         self.client_token = client_token
         self.hours_after_midnight = hours_after_midnight
-        self.last_execution = None
+        self.last_execution = datetime.now()
 
     def wait_for_next_execution(self):
         last_execution_date = self.last_execution.date()
