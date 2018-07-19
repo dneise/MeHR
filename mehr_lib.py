@@ -42,7 +42,7 @@ class MewsClient:
         )
         print(time.asctime(), 'next_execution:', next_execution, flush=True)
 
-        while datetime.utcnow() < next_execution:
+        while datetime.now() < next_execution:
             time.sleep(10)
         return
 
