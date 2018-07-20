@@ -42,6 +42,9 @@ Jedem Hotel in Zürich wurden von der Kantonspolizei ein vierstelliger Code zuge
 
 # Installation
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/zv3GeBg5esw/0.jpg)](https://www.youtube.com/watch?v=zv3GeBg5esw)
+
+
 ## Erste Schritte
 
 Ich habe MeHR in meiner Freizeit entwickelt und stelle es Ihnen frei zur Verfügung. Näheres entnehmen sie bitte der [Lizenz](LICENSE). Falls MeHR auf ihrem System nicht wie gewünscht funktionieren sollte können sie gerne über das [Ticketsystem](https://github.com/dneise/mehr/issues) Kontakt aufnehmen und fragen stellen.
