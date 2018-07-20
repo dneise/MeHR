@@ -204,6 +204,7 @@ Hierzu empfehle ich das Programm [NSSM](<http://nssm.cc/release/nssm-2.24.zip>).
 
 Die Einrichtung von MeHR als Dienst mit Hilfe von NSSM ist viel leichter in einem kleinen Video zu erklären als es hier im Text zu beschreiben. Daher würde ich Sie an dieser Stelle auf das unten stehende Video verweisen.
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/_CcAJm1uYrc/0.jpg)](https://www.youtube.com/watch?v=_CcAJm1uYrc)
 
 # [License](LICENSE)
 
