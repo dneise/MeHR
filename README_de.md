@@ -21,6 +21,8 @@ Hierfür ist es notwendig, dass der SiDAP-Client auf Ihrem System installiert is
 
 ## Vorbereitungen
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/MXrxauWNL-k/0.jpg)](https://www.youtube.com/watch?v=MXrxauWNL-k)
+
 ### ClientToken
 
 Damit ein Programm mit Mews in Kontakt treten darf, muss es mit einem sog. *ClientToken* beweisen, dass es sich um ein Programm handelt, welches von Mews zeritfiziert wurde. MeHR wurde von Mews zeritfiziert, enthält aber nicht den ClientToken, da es sich bei MeHR um freie und quelloffene Software handelt.
