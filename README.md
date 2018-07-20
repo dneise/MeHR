@@ -1,6 +1,6 @@
 # Mews HoKo Reporter (MeHR)
 
-(Deutsche Version)[README_de.md]
+[Deutsche Version](README_de.md)
 
 The Mews HoKo Reporter is a little tool to create dedicated reports for the
 [Zurich Hotel Kontrolle (HoKo)](https://www.hotelkontrolle.zh.ch)
