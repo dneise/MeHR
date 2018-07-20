@@ -76,6 +76,8 @@ Falls sie an dieser Stelle keinen Test-Meldeschein-Report sehen, funktioniert Me
 
 ## Konfiguration
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/kCho1oRCoy8/0.jpg)](https://www.youtube.com/watch?v=kCho1oRCoy8)
+
 Die Konfigurationsdatei `config.json` ist im sog. [JSON Format](https://de.wikipedia.org/wiki/JavaScript_Object_Notation#Beispiel) geschrieben. Dies ist ein Dateiformat, welches
 sowohl maschinen- als auch menschenlesbar ist, so dass Sie die Konfiguration bequem durchführen,
 aber auch das MeHR Programm ihre Einträge sicher und fehlerfrei versteht.
