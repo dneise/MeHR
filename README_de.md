@@ -1,6 +1,6 @@
 # Mews HoKo Reporter (MeHR)
 
-(English version)[README.md]
+[English version](README.md)
 
 Der Mews Hoko Reporter ist ein kleines Programm, welches automatisch
 die Meldeschein-Reports für die
