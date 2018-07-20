@@ -1,6 +1,6 @@
 # Mews HoKo Reporter (MeHR)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/uq2ZysrAoT4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/uq2ZysrAoT4/0.jpg)](https://www.youtube.com/watch?v=uq2ZysrAoT4)
 
 [English version](README.md)
 
