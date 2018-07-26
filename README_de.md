@@ -1,6 +1,8 @@
 # Mews HoKo Reporter (MeHR)
 
-(English version)[README.md]
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/uq2ZysrAoT4/0.jpg)](https://www.youtube.com/watch?v=uq2ZysrAoT4)
+
+[English version](README.md)
 
 Der Mews Hoko Reporter ist ein kleines Programm, welches automatisch
 die Meldeschein-Reports für die
@@ -18,6 +20,8 @@ Hierfür ist es notwendig, dass der SiDAP-Client auf Ihrem System installiert is
 
 
 ## Vorbereitungen
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/MXrxauWNL-k/0.jpg)](https://www.youtube.com/watch?v=MXrxauWNL-k)
 
 ### ClientToken
 
@@ -37,6 +41,9 @@ Sie finden das AccessToken für MeHR im Mews Commander under Settings -> Integra
 Jedem Hotel in Zürich wurden von der Kantonspolizei ein vierstelliger Code zugeteilt. Auch diesen benötigt MeHR, bitte halten sie also für jedes Ihrer Zürcher Hotels den HoKo Code bereit.
 
 # Installation
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/zv3GeBg5esw/0.jpg)](https://www.youtube.com/watch?v=zv3GeBg5esw)
+
 
 ## Erste Schritte
 
@@ -68,6 +75,8 @@ Sie können den Test-Meldeschein-Report nun löschen.
 Falls sie an dieser Stelle keinen Test-Meldeschein-Report sehen, funktioniert MeHR auf Ihrem System vermutlich nicht korrekt. Ich würde Sie an dieser Stelle bitten ein Ticket zu eröffnen und mir das Problem zu schildern.
 
 ## Konfiguration
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/kCho1oRCoy8/0.jpg)](https://www.youtube.com/watch?v=kCho1oRCoy8)
 
 Die Konfigurationsdatei `config.json` ist im sog. [JSON Format](https://de.wikipedia.org/wiki/JavaScript_Object_Notation#Beispiel) geschrieben. Dies ist ein Dateiformat, welches
 sowohl maschinen- als auch menschenlesbar ist, so dass Sie die Konfiguration bequem durchführen,
@@ -195,6 +204,7 @@ Hierzu empfehle ich das Programm [NSSM](<http://nssm.cc/release/nssm-2.24.zip>).
 
 Die Einrichtung von MeHR als Dienst mit Hilfe von NSSM ist viel leichter in einem kleinen Video zu erklären als es hier im Text zu beschreiben. Daher würde ich Sie an dieser Stelle auf das unten stehende Video verweisen.
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/_CcAJm1uYrc/0.jpg)](https://www.youtube.com/watch?v=_CcAJm1uYrc)
 
 # [License](LICENSE)
 
