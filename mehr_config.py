@@ -4,6 +4,7 @@ import os
 import os.path
 import json
 from dateutil.parser import parse as datetime_parse
+import logging
 
 config_template = {
     'PlatformAddress': "https://demo.mews.li",
@@ -32,7 +33,7 @@ def load_config(path_to_config=None):
         path_to_config = os.getcwd()
     config_path = os.path.join(path_to_config, 'config.json')
     if not os.path.isfile(config_path):
-        print(config_not_found_message.format(here=path_to_config))
+        logging.info(config_not_found_message.format(here=path_to_config))
         config_template['OutFolder'] = path_to_config
         json.dump(
             config_template,
@@ -47,7 +48,7 @@ def load_config(path_to_config=None):
 
     config.outpath_template = os.path.join(
         config.OutFolder,
-        '{hoko}_{timestamp:%Y%m%d_%H%M}_GEN_MEW.csv'
+        '{hoko}_{timestamp:%d%m%Y_%H%M}_GEN_MEW.csv'
     )
 
     if 'TestMode' not in config.__dict__:
@@ -58,5 +59,19 @@ def load_config(path_to_config=None):
 
     if config.TestMode:
         config.TestStartTime = datetime_parse(config.TestStartTime)
+
+    if 'log_level' in config.__dict__:
+        try:
+            config.log_level = getattr(logging, config.log_level)
+        except AttributeError as e:
+            logging.exception(e)
+            logging.warning(
+                '"log_level" in config.json is not a valid log_level: \n'
+                'Has to be one of CRITICAL, ERROR, WARNING, INFO, DEBUG'
+                'log_level is set to DEBUG now.'
+            )
+            config.log_level = logging.DEBUG
+    else:
+        config.log_level = logging.INFO
 
     return config
