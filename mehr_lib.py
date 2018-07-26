@@ -6,6 +6,7 @@ import requests
 import unicodedata
 from collections import defaultdict
 from types import SimpleNamespace
+import logging
 
 mews_gender_to_hoko_gender = defaultdict(str, Male='m', Female='w')
 
@@ -40,7 +41,7 @@ class MewsClient:
             timedelta(hours=self.hours_after_midnight) +
             timedelta(days=1)
         )
-        print(time.asctime(), 'next_execution:', next_execution, flush=True)
+        logging.info('next_execution: {}'.format(next_execution))
 
         while datetime.now() < next_execution:
             time.sleep(10)
@@ -234,8 +235,6 @@ def make_output_entries(mews_report):
             arrival_date=parse_date_to_ddmmyyyy(reservation['StartUtc']),
             departure_date=parse_date_to_ddmmyyyy(reservation['EndUtc']),
         ))
-
-
 
     return output_entries
 
