@@ -33,7 +33,7 @@ def load_config(path_to_config=None):
         path_to_config = os.getcwd()
     config_path = os.path.join(path_to_config, 'config.json')
     if not os.path.isfile(config_path):
-        logging.info(config_not_found_message.format(here=path_to_config))
+        print(config_not_found_message.format(here=path_to_config))
         config_template['OutFolder'] = path_to_config
         json.dump(
             config_template,
