@@ -128,15 +128,11 @@ Voreingestellt ist `3` Uhr morgens.
 
 ### `ClientToken`
 
-Bitte tragen sie hier, dass *ClientToken* ein, welches Ihnen von Mews (vermutlich per Email) auf Ihre Anfrage hin zugesandt wurde.
+Bitte tragen sie hier den *ClientToken* ein, welcher Ihnen von Mews (vermutlich per Email) auf Ihre Anfrage hin zugesandt wurde.
 
 ### `PlatformAddress`
 
-Dieser Eintrag muss von Ihnen wie folgt eingestellt werden:
-
-```json
-    "PlatformAddress": "https://www.mews.li"
-```
+Bitte tragen Sie hier `"https://www.mews.li"` ein.
 
 ### `Hotels`
 
