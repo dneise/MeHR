@@ -8,13 +8,13 @@ Der Mews Hoko Reporter ist ein kleines Programm, welches automatisch
 die Meldeschein-Reports für die
 [Zürcher Hotel Kontrolle (HoKo)](https://www.hotelkontrolle.zh.ch)
 aus [Mews](https://www.mewssystems.com/) zieht und der HoKo über die SiDAP Schnittstelle überträgt.
-Es läuft lokal auf einem Ihrer Computer im Hintergrund, am besten auf genau dem Computer
+Es läuft lokal auf einem Ihrer Computer im Hintergrund, am Besten auf genau dem Computer,
 auf welchem Sie im Augenblick bereits den [SiDAP client](https://www.hotelkontrolle.zh.ch/HoKoDMZ/pages/info.xhtml) installiert haben.
 
 
 ## Arbeitsweise
 
-MeHR fragt einmal pro Tag die Kundenprofile ab, die notwendig sind um die Meldeschein-Reports zusammen zu stellen, die von der Kantons Polizei verlangt werden. Sobald die notwendigen Daten heruntergeladen wurden, erzeugt MeHR einen speziell formatierten Report (in form einer sog. CSV-Datei), der direkt vom SiDAP-Client in die Datenbanken der Hotelkontrolle hochgeladen werden kann.
+MeHR fragt einmal pro Tag die Kundenprofile (Anreisen vom Vortag) ab, die notwendig sind, um die Meldeschein-Reports zusammen zu stellen, die von der Kantons Polizei verlangt werden. Sobald die notwendigen Daten heruntergeladen wurden, erzeugt MeHR einen speziell formatierten Report (in form einer sog. CSV-Datei), der direkt vom SiDAP-Client in die Datenbanken der Hotelkontrolle hochgeladen wird.
 
 Hierfür ist es notwendig, dass der SiDAP-Client auf Ihrem System installiert ist. MeHR ist kein Ersatz für den SiDAP-Client sondern eine Schnittstelle zwischen Mews und dem SiDAP-Client.
 
@@ -27,14 +27,14 @@ Hierfür ist es notwendig, dass der SiDAP-Client auf Ihrem System installiert is
 
 Damit ein Programm mit Mews in Kontakt treten darf, muss es mit einem sog. *ClientToken* beweisen, dass es sich um ein Programm handelt, welches von Mews zeritfiziert wurde. MeHR wurde von Mews zeritfiziert, enthält aber nicht den ClientToken, da es sich bei MeHR um freie und quelloffene Software handelt.
 
-Daher müssen sie als zukünftiger Benutzer von MeHR sich mit dem integrations team von Mews in Verbindung setzen und den ClientToken für MeHR erfragen. Dies ist vermutlich am einfachsten per email.
-Durch einen click auf [diesen Link](mailto:integrations@mewssystems.com?subject=ClientToken%20request%3A%20Connector%20Integration%20SiDAP&body=Dear%20Mews%20Integrations%20Team%2C%0A%0AWe%20would%20like%20to%20use%20the%20%22Connector%20Integration%20SiDAP%22%20for%20our%20Zurich%20based%20Hotels%20and%20therefore%20would%20like%20to%20request%20the%20ClientToken%20for%20this%20integration.%0A%0ABest%20regards%20and%20many%20thanks%20in%20advance%0A) sollte sich ihr email Programm öffnen und eine email mit einem bereits vorformulierten Text erscheinen.
+Daher müssen Sie sich, als zukünftiger Benutzer von MeHR, mit dem Integrations Team von Mews in Verbindung setzen und den ClientToken für MeHR erfragen. Dies ist vermutlich am einfachsten per Email.
+Durch einen click auf [diesen Link](mailto:integrations@mewssystems.com?subject=ClientToken%20request%3A%20Connector%20Integration%20SiDAP&body=Dear%20Mews%20Integrations%20Team%2C%0A%0AWe%20would%20like%20to%20use%20the%20%22Connector%20Integration%20SiDAP%22%20for%20our%20Zurich%20based%20Hotels%20and%20therefore%20would%20like%20to%20request%20the%20ClientToken%20for%20this%20integration.%0A%0ABest%20regards%20and%20many%20thanks%20in%20advance%0A) sollte sich Ihr Email Programm öffnen und eine Email mit einem bereits vorformulierten Text erscheinen.
 
 ### AccessToken
 
-Das ClientToken ermöglicht den Zugriff auf Mews, aber noch nicht auf die Daten Ihres Hotels. Die Daten Ihres Hotels sind jeweils mit einem AccessToken geschützt. Sie können MeHR Zugriff auf Ihre Kundendaten ermöglichen, indem Sie für jedes Hotel, für das MeHR reports erstellen soll, ein AccessToken bereithalten.
+Der ClientToken ermöglicht den Zugriff auf Mews, aber noch nicht auf die Daten Ihres Hotels. Die Daten Ihres Hotels sind mit einem zweiten Token, dem sog. *AccessToken*, geschützt. Sie können MeHR Zugriff auf Ihre Kundendaten ermöglichen, indem Sie für jedes Hotel, für das MeHR Reports erstellen soll, ein AccessToken bereithalten.
 
-Sie finden das AccessToken für MeHR im Mews Commander under Settings -> Integrations -> Connector Integration SiDAP. Oben rechts auf der Seite finden Sie dann ein Schlüssel Symbol. Wenn sie dies anklicken, erscheint ein AccessToken, welches sie bitte für die folgenden Schritte bereithalten.
+Sie finden das AccessToken für MeHR im Mews Commander under Settings -> Integrations -> Connector Integration SiDAP. Oben rechts auf der Seite finden Sie dann ein Schlüssel Symbol. Wenn Sie dies anklicken, erscheint ein AccessToken, welchen Sie bitte für die folgenden Schritte bereithalten.
 
 ### HoKo Code
 
