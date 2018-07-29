@@ -68,7 +68,7 @@ Hierzu nimmt MeHR bereits Kontakt zu einem Mews Demo-Hotel auf und fragt ab, wel
 Im nächsten Schritt werden Sie MeHR für Ihr Hotel konfigurieren.
 
 Sie können den Test-Meldeschein-Report nun löschen.
-Falls sie an dieser Stelle keinen Test-Meldeschein-Report sehen, funktioniert MeHR auf Ihrem System nicht korrekt. Ich würde Sie an dieser Stelle bitten, ein Ticket zu eröffnen und mir das Problem zu schildern.
+Falls sie an dieser Stelle keinen Test-Meldeschein-Report sehen, funktioniert MeHR auf Ihrem System nicht korrekt. Ich würde Sie in diesem Fall bitten, ein Ticket zu eröffnen und mir das Problem zu schildern.
 
 ## Konfiguration
 
