@@ -54,7 +54,7 @@ Um die Funktionalität von MeHR zu prüfen, gehen Sie bei der Installation bitte
 Laden Sie bitte die aktuelle Version von MeHR hier herunter:
 <https://github.com/dneise/MeHR/releases>
 
-Die aktuelle Version ist [mehr_v0.4.3.exe](https://github.com/dneise/MeHR/releases/download/v0.4.3/mehr_v0.4.3.exe).
+Die aktuelle Version ist [mehr_v0.4.4.exe](https://github.com/dneise/MeHR/releases/download/v0.4.4/mehr_v0.4.4.exe).
 
 Sie sollten die Datei nun in Ihrem `Downloads` Ordner finden. Für den ersten Testbetrieb schlage ich vor, diese exe-Datei in einen leeren Ordner zu verschieben, z.B. auf Ihrem Desktop.
 
