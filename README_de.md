@@ -62,7 +62,7 @@ Führen Sie bitte die Datei einmal aus, z.B. mit einem Doppelklick links.
 Es öffnet sich für sehr kurze Zeit ein Fenster und schliesst sich sofort wieder.
 Dies ist normal: MeHR kann nicht ohne eine sog. Konfigurations Datei funktionieren. Fehlt diese Datei, reklamiert MeHR und erzeugt für Sie eine solche Konfigurations Datei, welche bereits mit einer Test-Konfiguration gefüllt ist. Der Name der Konfigurationsdatei lautet `config.json`.
 
-Starten Sie die die `mehr_v0.4.3.exe` nun noch einmal, wird ein Test-Meldeschein-Report erstellt.
+Starten Sie die die `mehr_v0.4.4.exe` nun noch einmal, wird ein Test-Meldeschein-Report erstellt.
 Hierzu nimmt MeHR bereits Kontakt zu einem Mews Demo-Hotel auf und fragt ab, welche Gäste in diesem Demo-Hotel am 22.06.2018 eingecheckt haben. Dies diente als Test während der Entwicklung von MeHR und dient Ihnen nun als kurze Bestätigung, dass MeHR auf ihrem System korrekt läuft und von Ihrem System aus mit Mews Kontakt aufnehmen kann.
 
 Im nächsten Schritt werden wir MeHR nun für Ihr Hotel konfigurieren.
