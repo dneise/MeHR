@@ -216,7 +216,7 @@ def make_output_entries(mews_report):
     output_entries = []
     for reservation in mews_report['Reservations']:
         customer = customers[reservation['CustomerId']]
-        output_entries.append(SimpleNamespace(
+        entry = SimpleNamespace(
             creation_date=mews_report['ReportStartTimeUtc'],
             last_name=customer.get('LastName', '')[:100],
             first_name=customer.get('FirstName', '')[:100],
@@ -234,7 +234,16 @@ def make_output_entries(mews_report):
             number_of_adults=int(reservation.get('AdultCount')) - 1,
             arrival_date=parse_date_to_ddmmyyyy(reservation['StartUtc']),
             departure_date=parse_date_to_ddmmyyyy(reservation['EndUtc']),
-        ))
+        )
+        # They to not like empty strings. They want a dot in some field
+        # Go figure.
+        if entry.nationality == '':
+            entry.nationality = '.'
+        if entry.date_of_birth_str == '':
+            entry.date_of_birth_str = '.'
+        if entry.doc_number_str == '':
+            entry.doc_number_str = '.'
+        output_entries.append(entry)
 
     return output_entries
 

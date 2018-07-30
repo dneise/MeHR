@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='MeHR',
-    version='0.4.4',
+    version='0.4.5',
     description="Mews HoKo Reporter",
     author="Dominik Neise",
     author_email='neised@phys.ethz.ch',
