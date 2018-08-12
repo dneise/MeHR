@@ -190,7 +190,7 @@ def spaces_from_mews_report(mews_report):
     else:
         spaces = {}
 
-    spaces = defaultdict(lambda x: {'Number': ''}, **spaces)
+    spaces = defaultdict(lambda: {'Number': ''}, **spaces)
     return spaces
 
 
