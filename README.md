@@ -18,6 +18,7 @@ MeHR fragt einmal pro Tag die Kundenprofile (Anreisen vom Vortag) ab, die notwen
 
 Hierfür ist es notwendig, dass der SiDAP-Client auf Ihrem System installiert ist. MeHR ist kein Ersatz für den SiDAP-Client sondern eine Schnittstelle zwischen Mews und dem SiDAP-Client.
 
+Auch wenn Sie MeHR benutzen um die HoKo Reports für mehrere Hotels erstellen zu lassen, müssen sie den SiDAP Client nur einmal installieren. Zur Konfiguration des SiDAP Clients geben sie lediglich die Daten für eines der Hotels an. Der SiDAP Client kann trotzdem die Daten für alle ihrer Hotels hochladen.
 
 ## Vorbereitungen
 
@@ -121,6 +122,8 @@ können Sie sich diese gerne einmal selbst ansehen. Tragen Sie hier einfach eine
 Diese Einträge sind für den ersten Test notwendig. Wir werden noch einen
 weiteren Test durchführen, für den diese Einträge notwendig sind. Danach können sie gelöscht werden.
 
+Bitte geben Sie zum testen bei `TestStartTime` das gestrige Datum an.
+
 ### `HoursAfterMidnight`
 
 Bitte tragen sie hier die Zeit ein, zu der der Bericht erstellt werden soll.
@@ -167,7 +170,7 @@ Am Ende wird Ihre `config.json` so aussehen:
         }
     ],
     "TestMode": true,
-    "TestStartTime": "<heute> 03:00"
+    "TestStartTime": "15.12.2017 03:00"
 }
 ```
 
@@ -198,8 +201,13 @@ Die Einrichtung von MeHR als Dienst mit Hilfe von NSSM ist viel leichter in eine
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/_CcAJm1uYrc/0.jpg)](https://www.youtube.com/watch?v=_CcAJm1uYrc)
 
+# Troubleshooting
+
+Bei Problemen kann es helfen MeHR nicht durch Doppelklicken auszuführen sondern in der Eingabeaufforderung, wie in untenstehendem Video erklärt.
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/UErZF8yJTa4/0.jpg)](https://www.youtube.com/watch?v=UErZF8yJTa4)
+
 # [License](LICENSE)
 
 Dieses Programm ist kostenfrei und quelloffen.
 Sie können es für Ihr Hotel kostenfrei benutzen, ändern und weitergeben.
-
