@@ -85,7 +85,7 @@ class MewsClient:
             copied_hotel_config.AccessToken[-3:]
         )
         logging.info(
-            "Working on hotel %r \nwith start_utc: %s and end_utc: %s",
+            "Working on hotel %r timerange:%s - %s",
             copied_hotel_config,
             start_utc,
             end_utc
@@ -108,6 +108,13 @@ class MewsClient:
                 "Extent": extent,
             }
         )
+        if not response.ok:
+            logging.debug(
+                'response not ok: %r\nHeaders:\n%r\nText:\n%r\n',
+                response,
+                response.headers,
+                response.text
+            )
         self.last_execution = datetime.now()
 
         mews_report = response.json()
