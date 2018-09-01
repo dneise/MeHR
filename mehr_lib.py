@@ -1,5 +1,6 @@
 import os
 import time
+from copy import deepcopy
 from datetime import datetime, timedelta
 import iso8601
 import requests
@@ -77,6 +78,19 @@ class MewsClient:
         if end_utc is None and start_utc is not None:
             end_utc = start_utc + timedelta(days=1)
 
+        copied_hotel_config = deepcopy(hotel_config)
+        copied_hotel_config.AccessToken = (
+            copied_hotel_config.AccessToken[:3] +
+            '...' +
+            copied_hotel_config.AccessToken[-3:]
+        )
+        logging.info(
+            "Working on hotel %r \nwith start_utc: %s and end_utc: %s",
+            copied_hotel_config,
+            start_utc,
+            end_utc
+        )
+
         response = requests.post(
             '{PlatformAddress}/api/connector/v1/{Resource}/{Operation}'.format(
                 PlatformAddress=self.platform_address,
@@ -100,6 +114,7 @@ class MewsClient:
         mews_report['ReportStartTimeUtc'] = start_utc
         mews_report['ReportEndTimeUtc'] = end_utc
         mews_report['HoKoCode'] = hotel_config.HoKoCode
+        logging.debug('got mews_report: %r', mews_report)
         return mews_report
 
 
@@ -125,6 +140,12 @@ def write_text_file(
     outpath,
     output_entries
 ):
+    logging.info(
+        'Writing %d output_entries to: %s',
+        len(output_entries),
+        outpath
+    )
+
     outfolder = os.path.dirname(outpath)
     if not os.path.isdir(outfolder):
         os.makedirs(outfolder)
@@ -191,6 +212,7 @@ def spaces_from_mews_report(mews_report):
         spaces = {}
 
     spaces = defaultdict(lambda: {'Number': ''}, **spaces)
+    logging.debug('%d Spaces found in mews_report', len(spaces))
     return spaces
 
 
@@ -205,6 +227,7 @@ def customers_from_mews_report(mews_report):
             if customer['Address'][k] is None:
                 customer['Address'][k] = ''
         customers[customer['Id']] = customer
+    logging.debug('%d Customers found in mews_report', len(customers))
     return customers
 
 
@@ -214,6 +237,7 @@ def make_output_entries(mews_report):
     spaces = spaces_from_mews_report(mews_report)
 
     output_entries = []
+    logging.debug('%d Reservations found in mews_report', len(mews_report['Reservations']))
     for reservation in mews_report['Reservations']:
         customer = customers[reservation['CustomerId']]
         entry = SimpleNamespace(
@@ -245,6 +269,7 @@ def make_output_entries(mews_report):
             entry.doc_number_str = '.'
         output_entries.append(entry)
 
+    logging.debug('%d output_entries generated', len(output_entries))
     return output_entries
 
 csv_columns = [
