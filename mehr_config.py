@@ -12,7 +12,7 @@ config_template = {
     'OutFolder': None,
     'HoursAfterMidnight': 3,
     'TestMode': True,
-    'TestStartTime': "22.06.2018 03:00",
+    'TestStartTime': "2018-06-22 03:00",
     'Hotels': [
         {
             'AccessToken': "C66EF7B239D24632943D115EDE9CB810-EA00F8FD8294692C940F6B5A8F9453D",
