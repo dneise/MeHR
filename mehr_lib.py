@@ -223,6 +223,13 @@ def spaces_from_mews_report(mews_report):
     return spaces
 
 
+def get_no_None(dict_, key_, default=''):
+    value = dict_.get(key_, default)
+    if value is None:
+        value = default
+    return value
+
+
 def customers_from_mews_report(mews_report):
     customers = {}
     for customer in mews_report['Customers']:
@@ -244,16 +251,19 @@ def make_output_entries(mews_report):
     spaces = spaces_from_mews_report(mews_report)
 
     output_entries = []
-    logging.debug('%d Reservations found in mews_report', len(mews_report['Reservations']))
+    logging.debug(
+        '%d Reservations found in mews_report',
+        len(mews_report['Reservations'])
+    )
     for reservation in mews_report['Reservations']:
         customer = customers[reservation['CustomerId']]
         entry = SimpleNamespace(
             creation_date=mews_report['ReportStartTimeUtc'],
-            last_name=customer.get('LastName', '')[:100],
-            first_name=customer.get('FirstName', '')[:100],
+            last_name=get_no_None(customer, 'LastName', '')[:100],
+            first_name=get_no_None(customer, 'FirstName', '')[:100],
             date_of_birth_str=parse_date_to_ddmmyyyy(customer['BirthDateUtc']),
             gender=mews_gender_to_hoko_gender[customer['Gender']],
-            nationality=customer.get('NationalityCode', ''),
+            nationality=get_no_None(customer, 'NationalityCode', ''),
             address1=customer['Address']['Line1'][:100],
             address2=customer['Address']['Line2'][:100],
             zip_code=customer['Address']['PostalCode'][:100],
@@ -261,8 +271,8 @@ def make_output_entries(mews_report):
             doc_type=doc_from_customer(customer)[0],
             doc_number_str=doc_from_customer(customer)[1][:100],
             room_number=spaces[reservation['AssignedSpaceId']]['Number'][:10],
-            number_of_children=reservation.get('ChildCount', 0),
-            number_of_adults=int(reservation.get('AdultCount')) - 1,
+            number_of_children=get_no_None(reservation, 'ChildCount', 0),
+            number_of_adults=int(get_no_None(reservation, 'AdultCount')) - 1,
             arrival_date=parse_date_to_ddmmyyyy(reservation['StartUtc']),
             departure_date=parse_date_to_ddmmyyyy(reservation['EndUtc']),
         )
