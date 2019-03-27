@@ -253,10 +253,16 @@ def make_output_entries(mews_report):
     spaces = spaces_from_mews_report(mews_report)
 
     output_entries = []
-    logging.debug(
-        '%d Reservations found in mews_report',
-        len(mews_report['Reservations'])
-    )
+    if 'Reservations' not in mews_report:
+        logging.warning(
+            'no  Reservations found in mews_report'
+        )
+        return output_entries
+    else:
+        logging.debug(
+            '%d Reservations found in mews_report',
+            len(mews_report['Reservations'])
+        )
     for reservation in mews_report['Reservations']:
         customer = customers[reservation['CustomerId']]
         entry = SimpleNamespace(
