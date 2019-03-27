@@ -232,6 +232,8 @@ def get_no_None(dict_, key_, default=''):
 
 def customers_from_mews_report(mews_report):
     customers = {}
+    if 'Customers' not in mews_report:
+        return customers
     for customer in mews_report['Customers']:
         foo = customer.get('Address', {})
         if foo is None:
