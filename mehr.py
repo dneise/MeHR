@@ -21,10 +21,15 @@ def do_normal_mode(config):
     while True:
         mews.wait_for_next_execution()
         for hotel in config.Hotels:
-            mews_report = mews.reservations(hotel)
-            outpath = make_outpath(config.outpath_template, mews_report)
-            output_entries = make_output_entries(mews_report)
-            write_text_file(outpath, output_entries)
+            try:
+                mews_report = mews.reservations(hotel)
+                outpath = make_outpath(config.outpath_template, mews_report)
+                output_entries = make_output_entries(mews_report)
+                write_text_file(outpath, output_entries)
+            except (KeyboardInterrupt, SystemExit):
+                raise
+            except Exception as e:
+                logging.exception(e)
 
 
 def do_fix_date_test_mode(config):
