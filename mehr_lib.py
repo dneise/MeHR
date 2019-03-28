@@ -210,17 +210,18 @@ def parse_date_to_ddmmyyyy(dt):
 
 
 def spaces_from_mews_report(mews_report):
-    if mews_report['Spaces'] is not None:
-        spaces = {
-            space['Id']: space
-            for space in mews_report['Spaces']
-        }
+    spaces = mews_report.get('Spaces', None)
+    if spaces is None:
+        spaces_by_id = {}
     else:
-        spaces = {}
+        spaces_by_id = {
+            space['Id']: space
+            for space in spaces
+        }
 
-    spaces = defaultdict(lambda: {'Number': ''}, **spaces)
-    logging.debug('%d Spaces found in mews_report', len(spaces))
-    return spaces
+    spaces_by_id = defaultdict(lambda: {'Number': ''}, **spaces_by_id)
+    logging.debug('%d Spaces found in mews_report', len(spaces_by_id))
+    return spaces_by_id
 
 
 def get_no_None(dict_, key_, default=''):
