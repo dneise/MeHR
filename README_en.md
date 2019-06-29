@@ -1,5 +1,7 @@
 # Mews HoKo Reporter (MeHR)
 
+![overview_image](mehr_overview.png "overview")
+
 [Deutsche Version](README.md)
 
 The Mews HoKo Reporter is a little tool to create dedicated reports for the
