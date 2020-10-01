@@ -23,7 +23,7 @@ provided by the zurich police for this purpose.
 
 ## Preparation
 
-In order to use MeHR you need to request the "Connector Integration SiDAP" [via email](mailto:integrations@mewssystems.com) from Mews, Mews will then provide you with the `ClientToken` and you can find the `AccessToken`s in the Mews Commander under: Settings -> Integrations.
+In order to use MeHR you need to request the "Connector Integration SiDAP" [via email](mailto:marketplace@mews.com) from Mews, Mews will then provide you with the `ClientToken` and you can find the `AccessToken`s in Mews Commander under: burger menu > Marketplace > My subscriptions.
 
 In order to install MeHR you only need to download `mehr.exe` from here:
 
