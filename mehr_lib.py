@@ -32,6 +32,7 @@ class MewsClient:
         self.hours_after_midnight = hours_after_midnight
         self.last_execution = datetime.now()
 
+
     def wait_for_next_execution(self):
         last_execution_date = self.last_execution.date()
         last_execution_midnight = datetime(
@@ -58,7 +59,7 @@ class MewsClient:
         extent={
             "Customers": True,
             "Reservations": True,
-            "Spaces": True,
+            "Resources": True,
         },
     ):
         '''
@@ -70,6 +71,27 @@ class MewsClient:
         currency - string
         '''
         access_token = hotel_config.AccessToken
+
+        response = requests.post(
+            '{PlatformAddress}/api/connector/v1/services/getAll'.format(
+                PlatformAddress=self.platform_address,
+            ),
+            json={
+                "ClientToken": self.client_token,
+                "AccessToken": access_token,
+            }
+        )
+        if not response.ok:
+            logging.warning(
+                'unable to getall services: %r\nHeaders:\n%r\nText:\n%r\n',
+                response,
+                response.headers,
+                response.text
+            )
+
+        services = response.json()["Services"]
+        services = [s for s in services if s["Type"] == "Reservable"]
+        service_ids = [s["Id"] for s in services]
 
         if start_utc is None and end_utc is None:
             end_utc = hours_after_last_midnight(self.hours_after_midnight)
@@ -106,6 +128,7 @@ class MewsClient:
                 "StartUtc": start_utc.isoformat(),
                 "EndUtc": end_utc.isoformat(),
                 "Extent": extent,
+                "ServiceIds": service_ids,
             }
         )
         if not response.ok:
@@ -210,7 +233,7 @@ def parse_date_to_ddmmyyyy(dt):
 
 
 def spaces_from_mews_report(mews_report):
-    spaces = mews_report.get('Spaces', None)
+    spaces = mews_report.get('Resources', None)
     if spaces is None:
         spaces_by_id = {}
     else:
@@ -219,7 +242,7 @@ def spaces_from_mews_report(mews_report):
             for space in spaces
         }
 
-    spaces_by_id = defaultdict(lambda: {'Number': ''}, **spaces_by_id)
+    spaces_by_id = defaultdict(lambda: {'Name': ''}, **spaces_by_id)
     logging.debug('%d Spaces found in mews_report', len(spaces_by_id))
     return spaces_by_id
 
@@ -279,7 +302,7 @@ def make_output_entries(mews_report):
             city=customer['Address']['City'][:100],
             doc_type=doc_from_customer(customer)[0],
             doc_number_str=doc_from_customer(customer)[1][:100],
-            room_number=spaces[reservation['AssignedSpaceId']]['Number'][:10],
+            room_number=spaces[reservation['AssignedResourceId']]['Name'][:10],
             number_of_children=get_no_None(reservation, 'ChildCount', 0),
             number_of_adults=int(get_no_None(reservation, 'AdultCount')) - 1,
             arrival_date=parse_date_to_ddmmyyyy(reservation['StartUtc']),
