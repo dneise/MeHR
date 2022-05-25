@@ -87,7 +87,7 @@ Sie sollten in Ihrer `config.json` solche Einträge sehen. Die Reihenfolge der E
 
 ```json
 {
-    "PlatformAddress": "https://demo.mews.li",
+    "PlatformAddress": "https://api.mews-demo.com",
     "ClientToken": "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
     "HoursAfterMidnight": 3,
     "TestStartTime": "22.06.2018 03:00",
@@ -135,7 +135,7 @@ Bitte tragen sie hier den *ClientToken* ein, welcher Ihnen von Mews (vermutlich 
 
 ### `PlatformAddress`
 
-Bitte tragen Sie hier `"https://www.mews.li"` ein.
+Bitte tragen Sie hier `"https://api.mews.com"` ein.
 
 ### `Hotels`
 
@@ -148,7 +148,7 @@ Zur besseren Übersicht ist es erlaubt, weitere Felder wie z.B. `Name` hinzuzuf�
 Am Ende wird Ihre `config.json` so aussehen:
 ```json
 {
-    "PlatformAddress": "https://www.mews.li",
+    "PlatformAddress": "https://api.mews.com",
     "ClientToken": "<geheimes ClientToken via email>",
     "HoursAfterMidnight": 3,
     "OutFolder": "C:\\SiDAP\\SiDAP-Client\\Upload\\Hoko",
