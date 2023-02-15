@@ -7,7 +7,7 @@ from dateutil.parser import parse as datetime_parse
 import logging
 
 config_template = {
-    'PlatformAddress': "https://demo.mews.li",
+    'PlatformAddress': "https://api.mews-demo.com",
     'ClientToken': "E0D439EE522F44368DC78E1BFB03710C-D24FB11DBE31D4621C4817E028D9E1D",
     'OutFolder': None,
     'HoursAfterMidnight': 3,
