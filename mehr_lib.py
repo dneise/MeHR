@@ -71,11 +71,8 @@ class MewsClient:
         currency - string
         '''
         access_token = hotel_config.AccessToken
-
         response = requests.post(
-            '{PlatformAddress}/api/connector/v1/services/getAll'.format(
-                PlatformAddress=self.platform_address,
-            ),
+            f'{self.platform_address}/api/connector/v1/services/getAll',
             json={
                 "ClientToken": self.client_token,
                 "AccessToken": access_token,
@@ -90,7 +87,10 @@ class MewsClient:
             )
 
         services = response.json()["Services"]
-        services = [s for s in services if s["Type"] == "Reservable"]
+        def is_reservable_and_active(service):
+            return service["Type"] == "Reservable" and service["IsActive"]
+
+        services = [s for s in services if is_reservable_and_active(s)]
         service_ids = [s["Id"] for s in services]
 
         if start_utc is None and end_utc is None:
@@ -113,23 +113,20 @@ class MewsClient:
             end_utc
         )
 
+        json={
+            "ClientToken": self.client_token,
+            "AccessToken": access_token,
+            "LanguageCode": None,
+            "CultureCode": None,
+            "TimeFilter": time_filter,
+            "StartUtc": start_utc.isoformat(),
+            "EndUtc": end_utc.isoformat(),
+            "Extent": extent,
+            "ServiceIds": service_ids,
+        }
         response = requests.post(
-            '{PlatformAddress}/api/connector/v1/{Resource}/{Operation}'.format(
-                PlatformAddress=self.platform_address,
-                Resource='reservations',
-                Operation='getAll',
-            ),
-            json={
-                "ClientToken": self.client_token,
-                "AccessToken": access_token,
-                "LanguageCode": None,
-                "CultureCode": None,
-                "TimeFilter": time_filter,
-                "StartUtc": start_utc.isoformat(),
-                "EndUtc": end_utc.isoformat(),
-                "Extent": extent,
-                "ServiceIds": service_ids,
-            }
+            f'{self.platform_address}/api/connector/v1/reservations/getAll',
+            json=json
         )
         if not response.ok:
             logging.debug(
